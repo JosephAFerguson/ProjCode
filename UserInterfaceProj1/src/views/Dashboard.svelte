@@ -4,8 +4,7 @@
 
   let chartCanvas;
   let chart;
-  
-  // Example data
+
   let labels = [
     "2025-09-01","2025-09-02","2025-09-03","2025-09-04","2025-09-05",
     "2025-09-06","2025-09-07"
@@ -14,7 +13,7 @@
   let benchAmounts = [185, 200, 220, 205, 230, 215, 225];
   let deadliftAmounts = [340, 365, 355, 350, 395, 380, 385];
 
-  let visibleDays = 7; // controlled by slider
+  let visibleDays = 7;
 
   onMount(() => {
     chart = new Chart(chartCanvas, {
@@ -22,30 +21,9 @@
       data: {
         labels,
         datasets: [
-          {
-            label: "Squat (lbs)",
-            data: squatAmounts,
-            borderColor: "#4cafef",
-            backgroundColor: "rgba(76, 175, 239, 0.2)",
-            tension: 0.3,
-            fill: true
-          },
-          {
-            label: "Bench (lbs)",
-            data: benchAmounts,
-            borderColor: "#4cafef",
-            backgroundColor: "rgba(76, 175, 239, 0.2)",
-            tension: 0.3,
-            fill: true
-          },
-          {
-            label: "Deadlift (lbs)",
-            data: deadliftAmounts,
-            borderColor: "#4cafef",
-            backgroundColor: "rgba(76, 175, 239, 0.2)",
-            tension: 0.3,
-            fill: true
-          }
+          { label: "Squat (lbs)", data: squatAmounts, borderColor: "#4cafef", backgroundColor: "rgba(76, 175, 239, 0.2)", tension: 0, fill: true },
+          { label: "Bench (lbs)", data: benchAmounts, borderColor: "#ef4ca5", backgroundColor: "rgba(239, 76, 165, 0.2)", tension: 0, fill: true },
+          { label: "Deadlift (lbs)", data: deadliftAmounts, borderColor: "#4cef76", backgroundColor: "rgba(76, 239, 118, 0.2)", tension: 0, fill: true }
         ]
       },
       options: {
@@ -70,47 +48,91 @@
 </script>
 
 <div class="dashboard">
-  <!-- Vertical slider for time scroll -->
-  <input
-    type="range"
-    min="3"
-    max={labels.length}
-    bind:value={visibleDays}
-    on:input={updateChart}
-    class="time-scroll"
-  />
+  <div class="metrics">
+    <div class="metrics-card">
+      <p>Squat</p>
+      <p>305 lbs</p>
+    </div>
+    <div class="metrics-card">
+      <p>Bench</p>
+      <p>225 lbs</p>
+    </div>
+    <div class="metrics-card">
+      <p>Deadlift</p>
+      <p>385 lbs</p>
+    </div>
+  </div>
 
-  <!-- Chart -->
   <div class="chart-container">
+    <!-- Slider on the left -->
+    <input
+      type="range"
+      min="3"
+      max={labels.length}
+      bind:value={visibleDays}
+      on:input={updateChart}
+      class="time-scroll"
+    />
     <canvas bind:this={chartCanvas}></canvas>
   </div>
 </div>
-
 <style>
   .dashboard {
     display: flex;
-    position: fixed;
-    top:15rem;
-    left: 28rem;
-    align-items: stretch;
-    height: 40rem;
-    width: 80rem;
+    flex-direction: column; /* stack metrics on top of chart */
+    align-items: center;
+    padding: 1rem;
+    height: 90vh;
+    box-sizing: border-box;
+    gap: 1.5rem;
+    overflow: hidden;
   }
 
-  .time-scroll {
-    writing-mode: vertical-lr; /* makes it vertical */
-    transform: rotate(180deg); /* flip direction */
-    margin-right: 1rem;
-    height: 100%;
+  .metrics {
+    display: flex;
+    gap: 2rem; /* horizontal gap between cards */
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+
+  .metrics-card {
+    background: #3a3a3a;
+    color: white;
+    padding: 1rem 1.5rem;
+    margin-top: 2.5rem;
+    margin-left: 10rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    text-align: center;
+    min-width: 250px;
+  }
+
+  .metrics-card p {
+    margin: 0.25rem 0;
+    font-weight: bold;
   }
 
   .chart-container {
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    max-height: 70vh; /* smaller chart */
+    width: 90%;
     position: relative;
   }
 
+  .time-scroll {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    height: 100%;
+  }
+
   canvas {
-    width: 100% !important;
+    flex: 1;
     height: 100% !important;
+    width: 100% !important;
+    display: block;
   }
 </style>
+

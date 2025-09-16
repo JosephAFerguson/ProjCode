@@ -28,6 +28,6 @@
 
 <Navbar />
 
-<main>
+<main class="content">
   <Router {routes}/>
 </main>

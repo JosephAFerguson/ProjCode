@@ -24,11 +24,7 @@
 
 <style>
   .header {
-    position: fixed;        /* pin to the top */
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 70px;           /* fixed height for alignment */
+    grid-area: header;
     display: flex;
     justify-content: space-between;
     align-items: center;

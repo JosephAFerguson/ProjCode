@@ -8,24 +8,23 @@
 
 <style>
   .navbar {
-    position: fixed;
-    top: 70px;  /* match header height */
-    left: 0;
-    bottom: 0;
-    width: 200px;
-    background: var(--background, #3a3a3a);
+    display: grid;
+    grid-area: sidebar;
+    grid-auto-rows: min-content; /* each link gets its own row */
     padding: 1rem;
+    background: var(--background, #3a3a3a);
     border-right: 2px solid #444;
-    display: flex;
-    flex-direction: column;
+    box-sizing: border-box;
   }
 
   .navbar a {
     color: var(--textcolor, red);
     text-decoration: none;
-    margin: 0.5rem 0;
-    padding: 0.5rem;
     border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 2rem;
+    transition: background 0.2s, color 0.2s;
+    display: block; /* ensure links occupy full row */
   }
 
   .navbar a:hover {
@@ -33,4 +32,3 @@
     color: darkred;
   }
 </style>
-
