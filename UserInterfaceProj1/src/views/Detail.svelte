@@ -1,83 +1,7 @@
 <script>
   // Example exercise list
-  let exercises = [
-  // --- Big 3 (SBD) ---
-  "Back Squat",
-  "Bench Press",
-  "Deadlift",
-
-  // --- Other compound barbell lifts ---
-  "Front Squat",
-  "Overhead Press",
-  "Incline Bench Press",
-  "Barbell Row",
-  "Romanian Deadlift (RDL)",
-  "Sumo Deadlift",
-
-  // --- Accessory barbell/dumbbell ---
-  "Hip Thrust",
-  "Glute Ham Raise",
-  "Lunges",
-  "Bulgarian Split Squat",
-  "Step-Ups",
-  "Good Mornings",
-  "Deficit Deadlift",
-  "Pause Squat",
-  "Close-Grip Bench Press",
-  "Dumbbell Bench Press",
-  "Arnold Press",
-  "Incline Dumbbell Press",
-
-  // --- Pulling/rowing ---
-  "Pull-Ups",
-  "Chin-Ups",
-  "Lat Pulldown",
-  "Seated Cable Row",
-  "Chest-Supported Row",
-  "Face Pulls",
-  "T-Bar Row",
-
-  // --- Arms ---
-  "Bicep Curl",
-  "Hammer Curl",
-  "Preacher Curl",
-  "Tricep Pushdown",
-  "Skull Crushers (EZ Bar)",
-  "Overhead Tricep Extension",
-  "Dips",
-
-  // --- Shoulders ---
-  "Lateral Raises",
-  "Front Raises",
-  "Rear Delt Fly",
-  "Upright Row",
-  "Shrugs",
-
-  // --- Legs / Lower body ---
-  "Leg Press",
-  "Hack Squat",
-  "Leg Extension",
-  "Leg Curl",
-  "Calf Raises",
-  "Walking Lunges",
-
-  // --- Core ---
-  "Plank",
-  "Hanging Leg Raises",
-  "Ab Wheel Rollout",
-  "Cable Crunch",
-  "Russian Twist",
-
-  // --- Bodyweight / functional ---
-  "Push-Ups",
-  "Pull-Ups",
-  "Dips",
-  "Burpees",
-  "Box Jumps",
-  "Farmer’s Carry"
-];
-
-
+  import {exercises} from "../lib/Definitions.js";
+  let filteredexercises = exercises;
   let selectedExercise = exercises[0];
 
   // Mock sets data
@@ -89,6 +13,14 @@
 
   function selectExercise(ex) {
     selectedExercise = ex;
+  }
+
+  function filterSetsByMuscle(muscle) {
+    if (muscle === "pecs") {
+      filteredexercises = exercises.filter(ex => ex.toLowerCase().includes("press"));
+    } else {
+      filteredexercises = exercises;
+    }
   }
   
 </script>
@@ -109,10 +41,10 @@
           d="m 90.601543,86.020563 c -7.889462,10.688947 -9.925452,10.943445 -7.889462,10.688947 2.035989,-0.2545 29.776349,-0.2545 29.776349,-0.2545 L 98.491002,85.766066 Z M 91.11054,53.444729 c -2.89007,0.455002 -6.119032,1.709018 -8.217801,3.747327 -2.218021,2.154123 -4.359123,5.634753 -4.507136,8.723111 -0.369825,7.716528 11.961439,19.850899 11.961439,19.850899 h 8.143956 c 0,0 10.124662,-13.469204 8.838002,-21.117656 -0.57627,-3.425601 -4.14723,-6.506047 -7.0565,-8.404195 -2.67447,-1.744949 -6.007444,-3.296122 -9.16196,-2.799486 z"
           />
         <path class="pecs"
-          id="rect4-8"
+          id="pecs"
           style="fill:#ff2a2a;stroke-width:0.296642"
           d="M 96.502327,96.908089 H 120.6797 V 122.10346 H 96.502327 Z M 70.750641,96.709511 H 94.928019 V 121.90488 H 70.750641 Z"
-          />
+          on:click={() => filterSetsByMuscle("pecs")} />
         <path class="shoulder"
           id="path5"
           style="fill:#ffd42a;stroke-width:0.264583"
@@ -196,7 +128,7 @@
   <div class="exercise-list">
     <h3>Exercises</h3>
     <div class="scrollable">
-      {#each exercises as ex}
+      {#each filteredexercises as ex}
         <div
           class="exercise {selectedExercise === ex ? 'active' : ''}"
           on:click={() => selectExercise(ex)}
@@ -244,7 +176,7 @@
   .muscle-view {
     display: flex;
     flex-direction: column;
-    align-items: center;  /* ✅ centers child items (svg + labels) */
+    align-items: center; 
     justify-content: flex-start;
     gap: 1rem;
     background: #222;
@@ -257,12 +189,12 @@
 
 
   .muscle-view svg {
-    max-width: 100%;     /* don’t overflow container */
-    max-height: 300px;   /* keep consistent height */
-    width: auto;         /* scale naturally */
+    max-width: 100%;    
+    max-height: 300px; 
+    width: auto;         
     height: auto;
     display: block;
-    margin: 0 auto;      /* ✅ centers horizontally */
+    margin: 0 auto;    
   }
 
 
