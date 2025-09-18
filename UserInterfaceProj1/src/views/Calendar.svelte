@@ -1,17 +1,11 @@
 <script>
   import { onMount } from "svelte";
+  import { entries as allEntries } from "../lib/Definitions.js";
 
   let currentYear = 2025;
-  let currentMonth = 6; // July (0-based index)
+  let currentMonth = 8; // September (0-based index)
   let days = [];
   let selectedDate = null;
-  
-  // Mock workout data
-  let workouts = {
-    "2025-07-02": { title: "Leg Day", exercises: ["Squat", "Deadlift"] },
-    "2025-07-10": { title: "Push Day", exercises: ["Bench Press", "Overhead Press"] },
-    "2025-07-15": { title: "Pull Day", exercises: ["Pull-ups", "Rows"] }
-  };
 
   const months = [
     "January","February","March","April","May","June",
@@ -20,8 +14,20 @@
 
   const years = Array.from({ length: 11 }, (_, i) => 2020 + i); // 2020–2030
 
+  // Create a lookup object: workoutsByDate[date] = [array of entries on that date]
+  let workoutsByDate = {};
+  function buildWorkoutLookup() {
+    workoutsByDate = {};
+    for (const entry of allEntries) {
+      const dateKey = entry.date; // ISO format "YYYY-MM-DD"
+      if (!workoutsByDate[dateKey]) workoutsByDate[dateKey] = [];
+      workoutsByDate[dateKey].push(entry);
+    }
+  }
+
   onMount(() => {
     generateDays(currentYear, currentMonth);
+    buildWorkoutLookup();
   });
 
   function generateDays(year, month) {
@@ -52,7 +58,7 @@
 </script>
 
 <div class="calendar-container">
-  <!-- Month View on Top -->
+  <!-- Month View -->
   <div class="month-view">
     <div class="controls">
       <select on:change={changeMonth} bind:value={currentMonth}>
@@ -70,29 +76,63 @@
 
     <div class="days-grid">
       {#each days as day}
-        <div 
-          class="day {selectedDate === day.toISOString().split('T')[0] ? 'selected' : ''}"
+        {@const dayKey = day.toISOString().split('T')[0]}
+        <button
+          type="button"
+          class="day {selectedDate === dayKey ? 'selected' : ''}"
           on:click={() => selectDate(day)}
+          aria-pressed={selectedDate === dayKey}
         >
-          {day.getDate()}
-        </div>
+          <span>{day.getDate()}</span>
+          {#if workoutsByDate[dayKey]?.length > 0}
+            <span class="dot"></span>
+          {/if}
+        </button>
       {/each}
-    </div>
   </div>
 
-  <!-- Entry View Below -->
+  </div>
+
+  <!-- Entry View -->
   <div class="entry-view">
     {#if selectedDate}
       <h3>{selectedDate}</h3>
-      {#if workouts[selectedDate]}
-        <div class="entry">
-          <h4>{workouts[selectedDate].title}</h4>
-          <ul>
-            {#each workouts[selectedDate].exercises as ex}
-              <li>{ex}</li>
-            {/each}
-          </ul>
-        </div>
+      {#if workoutsByDate[selectedDate]?.length}
+        {#each workoutsByDate[selectedDate] as workout}
+          <div class="entry">
+            {#if workout.image}
+              <img src={workout.image} alt={workout.exercise} />
+            {/if}
+            <h4>{workout.exercise}</h4>
+            {#if workout.entry}
+              <p>{workout.entry}</p>
+            {/if}
+            <p>Protein: {workout.protein}g | Bodyweight: {workout.bodyweight} lbs</p>
+
+            {#if workout.sets.length}
+              <table>
+                <thead>
+                  <tr>
+                    <th>Set</th>
+                    <th>Weight</th>
+                    <th>Reps</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {#each workout.sets as set, i}
+                    <tr>
+                      <td>{i + 1}</td>
+                      <td>{set.weight}</td>
+                      <td>{set.reps}</td>
+                    </tr>
+                  {/each}
+                </tbody>
+              </table>
+            {:else}
+              <p>No sets logged.</p>
+            {/if}
+          </div>
+        {/each}
       {:else}
         <p>No workout on this date.</p>
       {/if}
@@ -105,7 +145,7 @@
 <style>
   .calendar-container {
     display: flex;
-    flex-direction: column; /* stack vertically */
+    flex-direction: column;
     gap: 1rem;
     height: 100%;
   }
@@ -120,9 +160,9 @@
     display: flex;
     gap: 3rem;
     margin-bottom: 1rem;
-    justify-content: center; 
-    align-items: center;     
-    }
+    justify-content: center;
+    align-items: center;
+  }
 
   .controls select {
     padding: 1rem;
@@ -139,17 +179,36 @@
   }
 
   .day {
-    padding: 1rem;
+    padding: 0.75rem 0.25rem;
     background: #444;
     border-radius: 0.25rem;
     cursor: pointer;
+    border: none;
+    outline: none;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+    position: relative; /* for dot positioning */
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .day:hover {
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: #ff5555; /* red dot */
+    border-radius: 50%;
+    margin-top: 3px;
+  }
+
+
+  .day:hover, .day:focus {
     background: #555;
   }
 
-  .day.selected {
+  .day.selected, .day[aria-pressed="true"] {
     background: darkred;
     color: white;
   }
@@ -159,16 +218,37 @@
     padding: 1rem;
     border-radius: 0.5rem;
     text-align: left;
-    flex: 1; /* grows to fill remaining space */
+    flex: 1;
+    overflow-y: auto;
   }
 
   .entry {
     background: #444;
     padding: 0.75rem;
     border-radius: 0.25rem;
+    margin-bottom: 1rem;
   }
 
-  .entry h4 {
-    margin-bottom: 0.5rem;
+  .entry img {
+    width: 100%;
+    border-radius: 0.5rem;
+    background: #444;
+    object-fit: cover;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+
+  th, td {
+    border: 1px solid #666;
+    padding: 0.25rem 0.5rem;
+    text-align: center;
+  }
+
+  th {
+    background: #555;
   }
 </style>

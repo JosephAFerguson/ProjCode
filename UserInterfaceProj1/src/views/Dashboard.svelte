@@ -21,9 +21,9 @@
       data: {
         labels,
         datasets: [
-          { label: "Squat (lbs)", data: squatAmounts, borderColor: "#4cafef", backgroundColor: "rgba(76, 175, 239, 0.2)", tension: 0, fill: true },
-          { label: "Bench (lbs)", data: benchAmounts, borderColor: "#ef4ca5", backgroundColor: "rgba(239, 76, 165, 0.2)", tension: 0, fill: true },
-          { label: "Deadlift (lbs)", data: deadliftAmounts, borderColor: "#4cef76", backgroundColor: "rgba(76, 239, 118, 0.2)", tension: 0, fill: true }
+          { label: "Squat (lbs)", data: squatAmounts, borderColor: "#4cafef", backgroundColor: "rgba(76, 175, 239, 0.2)", tension: 0, fill: false },
+          { label: "Bench (lbs)", data: benchAmounts, borderColor: "#ef4ca5", backgroundColor: "rgba(239, 76, 165, 0.2)", tension: 0, fill: false },
+          { label: "Deadlift (lbs)", data: deadliftAmounts, borderColor: "#4cef76", backgroundColor: "rgba(76, 239, 118, 0.2)", tension: 0, fill: false }
         ]
       },
       options: {
@@ -120,6 +120,12 @@
     max-height: 70vh; /* smaller chart */
     width: 90%;
     position: relative;
+  }
+  .chart-container canvas {
+    background: #222;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    flex: 1;
   }
 
   .time-scroll {

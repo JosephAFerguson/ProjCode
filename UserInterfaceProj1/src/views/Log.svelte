@@ -1,8 +1,22 @@
 <script>
-  // Import exercises list
-  import {exercises} from "../lib/Definitions.js";
-  import blankImage from "../lib/BlankImage.png"; // your placeholder
-  let imageUrl = blankImage; // default to placeholder
+  import { exercises, allSets } from "../lib/Definitions.js";
+  import blankImage from "../lib/BlankImage.png";
+
+  let imageUrl = blankImage;
+  let title = "";
+  let bw = "";
+  let protein = "";
+  let notes = "";
+  let showPopup = false;
+  let popupContent = "";
+
+  // Default lifts with sets if available
+  let lifts = [
+    { 
+      name: "Bench Press", 
+      sets: allSets["Bench Press"] ? allSets["Bench Press"].map(s => ({ weight: String(s.weight ?? ""), reps: String(s.reps ?? "") })) : [{ weight: "", reps: "" }] 
+    },
+  ];
 
   function handleFileUpload(event) {
     const file = event.target.files[0];
@@ -11,26 +25,14 @@
     }
   }
 
-  let title = "";
-  let bw = "";
-  let protein = "";
-  let notes = "";
-  let lifts = [
-    {
-      name: "Bench Press",
-      sets: [{ weight: "", reps: "" }]
-    },
-    {
-      name: "Squat",
-      sets: [{ weight: "", reps: "" }]
-    }
-  ];
-
+  function selectExerciseSets(lift) {
+    // Update sets if exercise exists in allSets
+    lift.sets = allSets[lift.name]
+      ? allSets[lift.name].map(s => ({ weight: String(s.weight ?? ""), reps: String(s.reps ?? "") }))
+      : [{ weight: "", reps: "" }];
+  }
   function addSet(liftIndex) {
-    lifts[liftIndex].sets = [
-      ...lifts[liftIndex].sets,
-      { weight: "", reps: "" }
-    ];
+    lifts[liftIndex].sets = [...lifts[liftIndex].sets, { weight: "", reps: "" }];
   }
 
   function removeSet(liftIndex, setIndex) {
@@ -42,22 +44,16 @@
   }
 
   function addLift() {
-    lifts = [
-      ...lifts,
-      { name: "New Lift", sets: [{ weight: "", reps: "" }] }
-    ];
+    lifts = [...lifts, { name: "New Lift", sets: [{ weight: "", reps: "" }] }];
   }
 
   function submitLog() {
-    const log = {
-      title,
-      bw,
-      protein,
-      notes,
-      lifts
-    };
-    alert("Workout log submitted!");
+    const log = { title, bw, protein, notes, lifts };
+    popupContent = JSON.stringify(log, null, 2);
+    showPopup = true;
   }
+
+  function closePopup() { showPopup = false; }
 </script>
 
 <div class="log-view">
@@ -94,6 +90,7 @@
             list="exercise-list"
             placeholder="Exercise"
             bind:value={lift.name}
+            on:change={() => selectExerciseSets(lift)}
           />
           <datalist id="exercise-list">
             {#each exercises as ex}
@@ -116,10 +113,35 @@
         </div>
       {/each}
 
+
       <button class="add-lift" on:click={addLift}>+ Add Lift</button>
     </div>
   </div>
 </div>
+
+{#if showPopup}
+  <div
+    class="popup-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Close popup"
+    on:click={closePopup}
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}
+  >
+    <div
+      class="popup"
+      role="dialog"
+      aria-modal="true"
+      tabindex="0"
+      on:click|stopPropagation
+      on:keydown|stopPropagation
+    >
+      <h3>Workout Log Submitted</h3>
+      <pre>{popupContent}</pre>
+      <button on:click={closePopup}>Close</button>
+    </div>
+  </div>
+{/if}
 
 <style>
   .log-view {
@@ -219,11 +241,6 @@
     margin-left: 0.25rem;
   }
 
-  .scrollable {
-    overflow-y: auto;
-    flex: 1;
-    padding-right: 0.5rem;
-  }
 
   .lift {
     background: #333;
@@ -282,4 +299,43 @@
     margin-top: 1rem;
     font-weight: bold;
   }
+  .popup-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup {
+    background: #222;
+    color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+  }
+
+  .popup button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: darkred;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+
+  .popup pre {
+    background: #333;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
+  }
 </style>
+
