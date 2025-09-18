@@ -13,6 +13,7 @@
   import {hamstringsexercises} from "../lib/Definitions.js";
   import {calfexercises} from "../lib/Definitions.js";
   import {allSets} from "../lib/Definitions.js";
+  import { onMount } from "svelte";
 
   let filteredexercises = exercises;
   let selectedExercise = exercises[0];
@@ -29,7 +30,19 @@
   function selectExercise(ex) {
     selectedExercise = ex;
   }
+  function handleKeydown(event) {
+    if (event.key === "Escape") {
+      filterSetsByMuscle();
+    }
+  }
 
+  onMount(() => {
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  });
   function filterSetsByMuscle(muscle) {
     selectedExercise = ""; // Reset specific selection when filtering by muscle
     if (muscle === "pecs") {
