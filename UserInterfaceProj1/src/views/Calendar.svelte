@@ -228,10 +228,10 @@
   .file-label:hover {
     background-color: #0056b3;
   }
+
   .calendar-container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     height: 100%;
   }
 
@@ -264,7 +264,7 @@
   }
 
   .day {
-    padding: 0.5rem 0.25rem;
+    padding: 0.20rem 0.25rem;
     background: #444;
     border-radius: 0.25rem;
     cursor: pointer;

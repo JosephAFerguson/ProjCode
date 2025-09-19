@@ -11,18 +11,19 @@
     display: grid;
     grid-area: sidebar;
     grid-auto-rows: min-content; /* each link gets its own row */
-    padding: 1rem;
+    padding: 0.75rem;
     background: var(--background, #3a3a3a);
     border-right: 2px solid #444;
-    box-sizing: border-box;
+    max-height:100%;
+    overflow: hidden;
   }
 
   .navbar a {
     color: var(--textcolor, red);
     text-decoration: none;
     border-radius: 0.25rem;
-    padding: 0.5rem 1rem;
-    margin-bottom: 2rem;
+    padding: 0.5rem 0.5rem;
+    margin-bottom: 2%;
     transition: background 0.2s, color 0.2s;
     display: block; /* ensure links occupy full row */
   }

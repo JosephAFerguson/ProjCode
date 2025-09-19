@@ -7,7 +7,6 @@
   import Header from "./components/Header.svelte";
   import Navbar from "./components/Navbar.svelte";
   import Settings from './views/Settings.svelte';
-  import { Chart } from "chart.js";
 
   const routes = {
     '/': Dashboard,
@@ -20,7 +19,7 @@
 
 
 <Header 
-  userName="Joe Ferguson" 
+  userName="Joe Ferguson"
   weekStreak={4} 
   trendingTotal={1205} 
   trendingBodyweight={192} 

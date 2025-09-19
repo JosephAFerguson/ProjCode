@@ -241,12 +241,13 @@
   }
 
 
-  .lift {
+  .lifts {
     background: #333;
     padding: 0.75rem;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
     color: white;
+    overflow-y: auto;
   }
 
   .lift-header {

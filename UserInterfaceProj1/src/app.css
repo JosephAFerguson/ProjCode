@@ -7,10 +7,6 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 #app {
@@ -18,9 +14,15 @@
   grid-template-areas:
     "header header"
     "sidebar content";
-  grid-template-rows: 5rem 1fr;
-  grid-template-columns: 20rem 1fr;
-  height: 100vh; /* full viewport */
+  grid-template-rows: 10% 90%;
+  grid-template-columns: 10% 90%;
+  height: 100%;
   text-align: center;
+  overflow: hidden;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
   overflow: hidden;
 }

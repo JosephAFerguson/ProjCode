@@ -78,34 +78,30 @@
 </div>
 <style>
   .dashboard {
-    display: flex;
+    display:inline;
     flex-direction: column; /* stack metrics on top of chart */
     align-items: center;
-    padding: 1rem;
-    height: 90vh;
-    box-sizing: border-box;
-    gap: 1.5rem;
-    overflow: hidden;
+    max-height: 90%;
+    max-width: 90%;
   }
 
   .metrics {
     display: flex;
-    gap: 2rem; /* horizontal gap between cards */
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
+    margin: 0;
   }
 
   .metrics-card {
     background: #3a3a3a;
     color: white;
-    padding: 1rem 1.5rem;
-    margin-top: 2.5rem;
-    margin-left: 10rem;
+    padding: 1rem 1rem;
+    margin-top: 1%;
+    margin-left: 7.5%;
+    width: 15%;
     border-radius: 0.5rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     text-align: center;
-    min-width: 250px;
-  }
+}
 
   .metrics-card p {
     margin: 0.25rem 0;
@@ -114,10 +110,9 @@
 
   .chart-container {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2.5rem;
-    max-height: 65vh; /* smaller chart */
+    justify-self: center;
+    margin-top: 1%;
+    max-height: 75%; /* smaller chart */
     width: 90%;
     position: relative;
   }
@@ -125,13 +120,11 @@
     background: #222;
     border-radius: 0.5rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    flex: 1;
   }
-
   .time-scroll {
     writing-mode: vertical-lr;
     transform: rotate(180deg);
-    height: 100%;
+    max-height: 75%;
   }
 
   canvas {
