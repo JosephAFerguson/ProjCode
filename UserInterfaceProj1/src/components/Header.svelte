@@ -1,18 +1,21 @@
 <script>
   let currentDate = new Date().toDateString();
   export let userName;
-  export let weekStreak;
   export let trendingTotal;
   export let trendingBodyweight;
 </script>
 
 <div class="header">
-  <h2 id="Name">{userName}</h2>
-  <p id="CurrentDate">{currentDate}</p>
-  <p id="WeekStreak">{weekStreak} Weeks Straight!</p>
-
+  <div class="left">
+    <h2 id="Name">{userName}</h2>
+    <h2 id="CurrentDate">{currentDate}</h2>
+  </div>
   
   <div class="right">
+    <div class="card">
+      <p class="label">Week Streak</p>
+      <p class="value">4 weeks</p>
+    </div>
     <div class="card">
       <p class="label">Total</p>
       <p class="value">{trendingTotal} lbs</p>
@@ -28,20 +31,24 @@
   .header {
     grid-area: header;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     background: var(--background, #3a3a3a);
     color: var(--textcolor, red);
     padding: 0 2rem;
     border-bottom: 2px solid #444;
   }
-  #WeekStreak{
-    margin-left: 2%;
-  }
+
   #CurrentDate{
     margin-left: 2%
   }
-  
+  .left {
+    display: flex;
+    width: 30%;
+    gap: 1rem;
+    flex-direction: row;
+    align-items: center;
+  }
   .right {
     display: flex;
     gap: 1rem;
@@ -58,7 +65,7 @@
   }
 
   .label {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
     color: #bbb;
     margin: 0;
   }

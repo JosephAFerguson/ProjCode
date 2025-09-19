@@ -89,14 +89,12 @@
           <option value={i}>{m}</option>
         {/each}
       </select>
-
       <select on:change={changeYear} bind:value={currentYear}>
         {#each years as y}
           <option value={y}>{y}</option>
         {/each}
       </select>
     </div>
-
     <div class="days-grid">
       {#each days as day}
         {@const dayKey = day.toISOString().split('T')[0]}
@@ -112,18 +110,15 @@
           {/if}
         </button>
       {/each}
+    </div>
   </div>
 
-  </div>
   <div class="entry-view">
-    {#if selectedDate}
-      <h3>{selectedDate}</h3>
-
-      {#if workoutsByDate[selectedDate]?.length}
-        {#each workoutsByDate[selectedDate] as workout, wi}
-          <div class="calendar-log-entry">
-            <!-- Image + Notes (left side) -->
-            <div class="calendar-left">
+    {#if selectedDate && workoutsByDate[selectedDate]?.length}
+      {#each workoutsByDate[selectedDate] as workout}
+        <div class="calendar-entry-side">
+          <div class="image-journal-container">
+            <div class="image-select-container">
               <div class="attachment">
                 <img src={workout.image || blankImage} alt="WorkoutPic" />
               </div>
@@ -131,61 +126,47 @@
                 <label class="file-label" for="file-upload">Change Image</label>
                 <input id="file-upload" type="file" accept="image/*" on:change={handleFileUpload} />
               </div>
-              <textarea
-                placeholder="Entry notes..."
-                bind:value={workout.entry}></textarea>
             </div>
-
-            <div class="calendar-right">
-              <div class="stats">
-                <label>BW: <input type="number" bind:value={workout.bodyweight} /></label>
-                <label>Protein: <input type="number" bind:value={workout.protein} /></label>
-                <button on:click={() => SaveEntry()}>Save</button>
-              </div>
-
-              <div class="workout-details">
-                {#each workout.workout as ithWorkout, wi}
-                  <div class="exercise-block">
-                    <div class="header">
-                      <input
-                        type="text"
-                        placeholder="Exercise"
-                        bind:value={ithWorkout.Exercise}
-                      />
-                    </div>
-
-                    {#each ithWorkout.Weights as w, si}
-                      <div class="set-row">
-                        <span>Set {si + 1}</span>
-                        <input
-                          type="text"
-                          placeholder="Weight"
-                          bind:value={ithWorkout.Weights[si]}
-                        />
-                        <input
-                          type="text"
-                          placeholder="Reps"
-                          bind:value={ithWorkout.Reps[si]}
-                        />
-                        <button class="removesetbutton" on:click={() => handleRemoveSet(ithWorkout, si)}>✖</button>
-                      </div>
-                    {/each}
-                    <button class="add-set"on:click={() => handleAddSet(ithWorkout)}>+ Add Set</button>
-                  </div>
-                {/each}
-              </div>
-            </div>
-
+            <textarea placeholder="Entry notes..." bind:value={workout.entry}></textarea>
           </div>
-        {/each}
-      {:else}
-        <p>No workout on this date.</p>
-      {/if}
+          <div class="stats">
+            <label>BW: <input type="number" bind:value={workout.bodyweight} /></label>
+            <label>Protein: <input type="number" bind:value={workout.protein} /></label>
+            <button on:click={() => SaveEntry()}>Save</button>
+          </div>
+        </div>
+      {/each}
     {:else}
-      <p>Select a date to view or edit details</p>
+      <p>Select a date to view/edit</p>
+    {/if}
+  </div>
+
+  <div class="workout-view">
+    {#if selectedDate && workoutsByDate[selectedDate]?.length}
+      {#each workoutsByDate[selectedDate] as workout}
+        <div class="workout-details">
+          {#each workout.workout as ithWorkout, wi}
+            <div class="exercise-block">
+              <div class="header">
+                <input type="text" placeholder="Exercise" bind:value={ithWorkout.Exercise} />
+              </div>
+              {#each ithWorkout.Weights as w, si}
+                <div class="set-row">
+                  <span>Set {si + 1}</span>
+                  <input type="text" placeholder="Weight" bind:value={ithWorkout.Weights[si]} />
+                  <input type="text" placeholder="Reps" bind:value={ithWorkout.Reps[si]} />
+                  <button class="removesetbutton" on:click={() => handleRemoveSet(ithWorkout, si)}>✖</button>
+                </div>
+              {/each}
+              <button class="add-set" on:click={() => handleAddSet(ithWorkout)}>+ Add Set</button>
+            </div>
+          {/each}
+        </div>
+      {/each}
     {/if}
   </div>
 </div>
+
 {#if showPopup}
   <div
     class="popup-backdrop"
@@ -210,10 +191,111 @@
   </div>
 {/if}
 <style>
+  .calendar-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: 50% 50%;
+    height: 100%;
+    gap: 1rem;
+    padding: 1rem;
+    background: #1a1a1a;
+    color: #eee;
+    font-family: system-ui, sans-serif;
+  }
+
+  .month-view {
+    background: #2a2a2a;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+
+  .controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+
+  .controls select {
+    padding: 0.4rem 0.75rem;
+    background: #1a1a1a;
+    color: #eee;
+    border: 1px solid #444;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    transition: border 0.2s, background 0.2s;
+  }
+  .controls select:hover {
+    border-color: #777;
+    background: #222;
+  }
+
+  .entry-view {
+    background: #222;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .image-journal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .image-select-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 200px;
+  }
+
+  .image-journal-container textarea {
+    flex: 1;
+    resize: vertical;
+    min-height: 20%;
+    background: #111;
+    color: #eee;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+  }
+  .attachment {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .attachment img {
+    width: 100%;
+    max-height: 100%;
+    border-radius: 0.5rem;
+    object-fit: cover;
+  }
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+  .stats button {
+    margin-left: auto;
+    padding: 0.25rem 0.75rem;
+    background: darkred;
+    border: none;
+    border-radius: 0.25rem;
+    color: white;
+    cursor: pointer;
+  }
   input[type="file"] {
     display: none;
   }
-
   .file-label {
     display: inline-block;
     padding: 0.25rem 0.5rem;
@@ -224,171 +306,84 @@
     font-size: 0.9rem;
     font-weight: 500;
   }
-
   .file-label:hover {
     background-color: #0056b3;
   }
-
-  .calendar-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+ 
+  .days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
   }
 
-  .month-view {
-    background: #333;
-    padding: 1rem;
+.day {
+  background: #3a3a3a;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: none;
+  color: #ddd;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+.day:hover, .day:focus {
+  background: #555;
+  transform: scale(1.05);
+}
+.day.selected, .day[aria-pressed="true"] {
+  background: #b22222;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 0 6px rgba(178,34,34,0.6);
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #ff6b6b;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+  .set-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+  .popup {
+    background: #222;
+    color: white;
+    padding: 2rem;
     border-radius: 0.5rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
   }
-
-  .controls {
+  .popup-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.6);
     display: flex;
-    gap: 3rem;
-    margin-bottom: 1rem;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
   }
-
-  .controls select {
-    padding: 0.5rem;
-    background: #222;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 0.25rem;
-  }
-
-  .days-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
-  }
-
-  .day {
-    padding: 0.20rem 0.25rem;
-    background: #444;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    color: inherit;
-    font: inherit;
-    text-align: center;
-    position: relative; /* for dot positioning */
-    transition: background 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    background: #ff5555; /* red dot */
-    border-radius: 50%;
-    margin-top: 3px;
-  }
-
-
-  .day:hover, .day:focus {
-    background: #555;
-  }
-
-  .day.selected, .day[aria-pressed="true"] {
+  .popup button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
     background: darkred;
     color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
   }
-
-  .entry-view {
-    background: #222;
-    padding: 1rem;
-    border-radius: 0.2rem;
-    text-align: left;
-    overflow-y: scroll;
-  }
-  
-  .attachment img {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 0.5rem;
-    background: #111;
-    object-fit: cover;
-    margin-bottom: 0.5rem;
-  }
-
-  .calendar-log-entry {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+  .popup pre {
     background: #333;
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0.25rem;
+    white-space: pre-wrap;
   }
-
-.calendar-left {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.calendar-right {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.calendar-right .header {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.set-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.stats button{
-  float: right;
-}
-.popup-backdrop {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup {
-  background: #222;
-  color: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  max-width: 500px;
-  width: 90%;
-  max-height: 80%;
-  overflow-y: auto;
-}
-
-.popup button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: darkred;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-.popup pre {
-  background: #333;
-  padding: 1rem;
-  border-radius: 0.25rem;
-  white-space: pre-wrap;
-}
 </style>

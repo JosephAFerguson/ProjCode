@@ -14,65 +14,116 @@
   let deadliftAmounts = [340, 365, 355, 350, 395, 380, 385];
 
   let visibleDays = 7;
+  let activeMetric = null; // null = show all
 
   onMount(() => {
     chart = new Chart(chartCanvas, {
       type: "line",
       data: {
-        labels,
-        datasets: [
-          { label: "Squat (lbs)", data: squatAmounts, borderColor: "#4cafef", backgroundColor: "rgba(76, 175, 239, 0.2)", tension: 0, fill: false },
-          { label: "Bench (lbs)", data: benchAmounts, borderColor: "#ef4ca5", backgroundColor: "rgba(239, 76, 165, 0.2)", tension: 0, fill: false },
-          { label: "Deadlift (lbs)", data: deadliftAmounts, borderColor: "#4cef76", backgroundColor: "rgba(76, 239, 118, 0.2)", tension: 0, fill: false }
-        ]
+        labels: labels,
+        datasets: []
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: true }
+        },
         scales: {
-          x: { ticks: { maxRotation: 0 } },
+          x: { ticks: { display: true } },
           y: { beginAtZero: false }
         }
       }
     });
+
+    updateChart(); // draw initial chart with all metrics
   });
 
   function updateChart() {
     const start = Math.max(0, labels.length - visibleDays);
     chart.data.labels = labels.slice(start);
-    chart.data.datasets[0].data = squatAmounts.slice(start);
-    chart.data.datasets[1].data = benchAmounts.slice(start);
-    chart.data.datasets[2].data = deadliftAmounts.slice(start);
+
+    if (activeMetric === "squat") {
+      chart.data.datasets = [
+        { label: "Squat (lbs)", data: squatAmounts.slice(start), borderColor: "#4cafef", backgroundColor: "rgba(76, 175, 239, 0.2)", tension: 0, fill: false }
+      ];
+    } else if (activeMetric === "bench") {
+      chart.data.datasets = [
+        { label: "Bench (lbs)", data: benchAmounts.slice(start), borderColor: "#ef4ca5", backgroundColor: "rgba(239, 76, 165, 0.2)", tension: 0, fill: false }
+      ];
+    } else if (activeMetric === "deadlift") {
+      chart.data.datasets = [
+        { label: "Deadlift (lbs)", data: deadliftAmounts.slice(start), borderColor: "#4cef76", backgroundColor: "rgba(76, 239, 118, 0.2)", tension: 0, fill: false }
+      ];
+    } else {
+      // show all
+      chart.data.datasets = [
+        { label: "Squat (lbs)", data: squatAmounts.slice(start), borderColor: "#4cafef", backgroundColor: "rgba(76, 175, 239, 0.2)", tension: 0, fill: false },
+        { label: "Bench (lbs)", data: benchAmounts.slice(start), borderColor: "#ef4ca5", backgroundColor: "rgba(239, 76, 165, 0.2)", tension: 0, fill: false },
+        { label: "Deadlift (lbs)", data: deadliftAmounts.slice(start), borderColor: "#4cef76", backgroundColor: "rgba(76, 239, 118, 0.2)", tension: 0, fill: false }
+      ];
+    }
+
     chart.update();
+  }
+
+  function updateChartByMetric(metric) {
+    if (activeMetric === metric) {
+      activeMetric = null; // second click resets filter
+    } else {
+      activeMetric = metric;
+    }
+    updateChart();
   }
 </script>
 
+
+
 <div class="dashboard">
   <div class="metrics">
-    <div class="metrics-card">
+    <div
+      class="metrics-card {activeMetric === 'squat' ? 'active' : activeMetric ? 'inactive' : ''}"
+      onclick={() => updateChartByMetric('squat')}
+    >
       <p>Squat</p>
       <p>305 lbs</p>
     </div>
-    <div class="metrics-card">
+    <div
+      class="metrics-card {activeMetric === 'bench' ? 'active' : activeMetric ? 'inactive' : ''}"
+      onclick={() => updateChartByMetric('bench')}
+    >
       <p>Bench</p>
       <p>225 lbs</p>
     </div>
-    <div class="metrics-card">
+    <div
+      class="metrics-card {activeMetric === 'deadlift' ? 'active' : activeMetric ? 'inactive' : ''}"
+      onclick={() => updateChartByMetric('deadlift')}
+    >
       <p>Deadlift</p>
       <p>385 lbs</p>
     </div>
   </div>
 
+
   <div class="chart-container">
-    <!-- Slider on the left -->
-    <input
-      type="range"
-      min="3"
-      max={labels.length}
-      bind:value={visibleDays}
-      on:input={updateChart}
-      class="time-scroll"
-    />
+    <div class="scroll-wrapper">
+      <div class="ticks">
+        {#each labels as date, i}
+          <div class="tick">{date}</div>
+        {/each}
+      </div>
+      <input
+        type="range"
+        min="1"
+        max={labels.length}
+        step="1"
+        bind:value={visibleDays}
+        oninput={updateChart}
+        class="time-scroll"
+      />
+    </div>
+
     <canvas bind:this={chartCanvas}></canvas>
   </div>
 </div>
@@ -95,24 +146,35 @@
     background: #3a3a3a;
     color: white;
     padding: 1rem 1rem;
-    margin-top: 1%;
+    margin-top: 2%;
     margin-left: 7.5%;
     width: 15%;
     border-radius: 0.5rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     text-align: center;
-}
+    transition: opacity 0.3s, transform 0.2s;
+    cursor: pointer;
+  }
 
   .metrics-card p {
     margin: 0.25rem 0;
     font-weight: bold;
   }
 
+  .metrics-card.active {
+    outline: 2px solid #fff;
+    transform: scale(1.05);
+  }
+
+  .metrics-card.inactive {
+    opacity: 0.4;
+  }
+
   .chart-container {
     display: flex;
     justify-self: center;
-    margin-top: 1%;
-    max-height: 75%; /* smaller chart */
+    margin-top: 2%;
+    height: 75%; /* smaller chart */
     width: 90%;
     position: relative;
   }
@@ -124,7 +186,32 @@
   .time-scroll {
     writing-mode: vertical-lr;
     transform: rotate(180deg);
-    max-height: 75%;
+    max-height: 100%;
+  }
+  .scroll-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    max-height: 100%;
+  }
+
+  .ticks {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 0.5rem;
+  }
+
+  .tick {
+    font-size: 0.7rem;
+    color: #ccc;
+    writing-mode: horizontal-tb; 
+  }
+
+  .time-scroll {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    max-height: 100%;
   }
 
   canvas {
