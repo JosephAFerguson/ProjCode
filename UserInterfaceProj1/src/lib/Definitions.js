@@ -273,11 +273,33 @@ export const allSets = {
 };
 // Generate random entries
 export const entries = [ 
-  { date: "2025-09-02", image: "../lib/DudeCurling.png", entry: "It was a great summer day in the middle of august ", protein: 120, bodyweight: 181, exercise: "Bench Press", sets: [] },
-  { date: "2025-09-05", image: "../lib/DudeSquatting.png", entry: "Felt strong today, hit a new PR on squats!", protein: 150, bodyweight: 182, exercise: "Squat", sets: [] },
-  { date: "2025-09-10", image: "UserInterfaceProj1\\src\\lib\\DudeSquatting.png", entry: "Back day was intense, really focused on form.", protein: 130, bodyweight: 180, exercise: "Deadlift", sets: [] },
-  { date: "2025-09-12", image: "UserInterfaceProj1\\src\\lib\\DudeCurling.png", entry: "Tried a new recipe for protein pancakes, delicious!", protein: 140, bodyweight: 181, exercise: "Bicep Curl", sets: [] },
-  { date: "2025-09-15", image: "UserInterfaceProj1\\src\\lib\\DudeSquatting.png", entry: "Leg day was brutal but worth it.", protein: 160, bodyweight: 183, exercise: "Leg Press", sets: [] },
-  { date: "2025-09-18", image: "UserInterfaceProj1\\src\\lib\\DudeOverhead.png", entry: "Feeling great after a solid shoulder workout.", protein: 125, bodyweight: 180, exercise: "Shoulder Press", sets: [] },
-  { date: "2025-09-20", image: "UserInterfaceProj1\\src\\lib\\DudeCurling.png", entry: "Took a rest day, muscles need time to recover.", protein: 110, bodyweight: 179, exercise: "Rest Day", sets: [] }, 
+  { date: "2025-09-02", image: "/images/DudeCurling.png", entry: "It was a great summer day in the middle of august ", protein: 120, bodyweight: 181, 
+    workout: [
+      {Exercise: "Bench Press", Weights: [210, 195, 165], Reps: [3, 6, 12]}, 
+      {Exercise: "Bicep Curl", Weights: [40, 35, 30], Reps: [12, 10, 8]} ]},
+  { date: "2025-09-05", image: "/images/DudeSquatting.png", entry: "Felt strong today, hit a new PR on squats!", protein: 150, bodyweight: 182,  
+    workout: [{Exercise: "Squat", Weights: [275, 245, 215], Reps: [3, 6, 12]},
+      {Exercise: "Leg Press", Weights: [350, 300, 250], Reps: [12, 10, 8]} ]
+  },
+  { date: "2025-09-10", image: "/images/DudeSquatting.png", entry: "Back day was intense, really focused on form.", protein: 130, bodyweight: 180,  
+    workout: [
+      {Exercise: "Deadlift", Weights: [315, 275, 225], Reps: [3, 6, 12]},
+      {Exercise: "Lat Pulldown", Weights: [120, 100, 80], Reps: [12, 10, 8]} ]
+    },
+
+  { date: "2025-09-12", image: "/images/DudeCurling.png", entry: "Tried a new recipe for protein pancakes, delicious!", protein: 140, bodyweight: 181, 
+    workout: [
+      {Exercise: "Bicep Curl", Weights: [40, 35, 30], Reps: [12, 10, 8]},
+      {Exercise: "Hammer Curl", Weights: [35, 30, 25], Reps: [12, 10, 8]} ]
+    },
+  { date: "2025-09-15", image: "/images/DudeSquatting.png", entry: "Leg day was brutal but worth it.", protein: 160, bodyweight: 183, 
+    workout: [
+      {Exercise: "Squat", Weights: [275, 245, 215], Reps: [3, 6, 12]} ,
+      {Exercise: "Lunges", Weights: [50, 40, 30], Reps: [12, 10, 8]} ]
+  },
+  { date: "2025-09-18", image: "/images/DudeCurling.png", entry: "Focused on shoulders and arms today.", protein: 135, bodyweight: 180, 
+    workout: [
+      {Exercise: "Shoulder Press", Weights: [115, 95, 75], Reps: [10, 8, 12]},
+      {Exercise: "Lateral Raise", Weights: [25, 20, 15], Reps: [12, 10, 8]} ]
+  },
 ];  

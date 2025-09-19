@@ -1,21 +1,21 @@
 <script>
   import { onMount } from "svelte";
   import { entries as allEntries } from "../lib/Definitions.js";
-
+  import blankImage from "/images/BlankImage.png";
   let currentYear = 2025;
-  let currentMonth = 8; // September (0-based index)
+  let currentMonth = 8; 
   let days = [];
   let selectedDate = null;
-
+  let workoutsByDate = {};
+  let showPopup = false;
+  let popupContent = "";
   const months = [
     "January","February","March","April","May","June",
     "July","August","September","October","November","December"
   ];
 
-  const years = Array.from({ length: 11 }, (_, i) => 2020 + i); // 2020–2030
+  const years = Array.from({ length: 11 }, (_, i) => 2020 + i); 
 
-  // Create a lookup object: workoutsByDate[date] = [array of entries on that date]
-  let workoutsByDate = {};
   function buildWorkoutLookup() {
     workoutsByDate = {};
     for (const entry of allEntries) {
@@ -55,10 +55,33 @@
     generateDays(currentYear, currentMonth);
     selectedDate = null;
   }
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file && selectedDate && workoutsByDate[selectedDate]?.length > 0) {
+      workoutsByDate[selectedDate][0].image = URL.createObjectURL(file);
+    }
+  }
+  function SaveEntry(date, workout) {
+    workoutsByDate = { ...workoutsByDate };
+    popupContent = "Entry Updated!";
+    showPopup = true;
+  }
+  function closePopup() { showPopup = false; }
+
+  function handleRemoveSet(exercise, i) {
+    exercise.Weights.splice(i, 1);
+    exercise.Reps.splice(i, 1);
+    workoutsByDate = { ...workoutsByDate};
+  }
+
+  function handleAddSet(exercise) {
+    exercise.Weights.push("");
+    exercise.Reps.push("");
+    workoutsByDate = { ...workoutsByDate};
+  }
 </script>
 
 <div class="calendar-container">
-  <!-- Month View -->
   <div class="month-view">
     <div class="controls">
       <select on:change={changeMonth} bind:value={currentMonth}>
@@ -92,57 +115,119 @@
   </div>
 
   </div>
-
-  <!-- Entry View -->
   <div class="entry-view">
     {#if selectedDate}
       <h3>{selectedDate}</h3>
-      {#if workoutsByDate[selectedDate]?.length}
-        {#each workoutsByDate[selectedDate] as workout}
-          <div class="entry">
-            {#if workout.image}
-              <img src={workout.image} alt={workout.exercise} />
-            {/if}
-            <h4>{workout.exercise}</h4>
-            {#if workout.entry}
-              <p>{workout.entry}</p>
-            {/if}
-            <p>Protein: {workout.protein}g | Bodyweight: {workout.bodyweight} lbs</p>
 
-            {#if workout.sets.length}
-              <table>
-                <thead>
-                  <tr>
-                    <th>Set</th>
-                    <th>Weight</th>
-                    <th>Reps</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {#each workout.sets as set, i}
-                    <tr>
-                      <td>{i + 1}</td>
-                      <td>{set.weight}</td>
-                      <td>{set.reps}</td>
-                    </tr>
-                  {/each}
-                </tbody>
-              </table>
-            {:else}
-              <p>No sets logged.</p>
-            {/if}
+      {#if workoutsByDate[selectedDate]?.length}
+        {#each workoutsByDate[selectedDate] as workout, wi}
+          <div class="calendar-log-entry">
+            <!-- Image + Notes (left side) -->
+            <div class="calendar-left">
+              <div class="attachment">
+                <img src={workout.image || blankImage} alt="WorkoutPic" />
+              </div>
+              <div class="imageinput">
+                <label class="file-label" for="file-upload">Change Image</label>
+                <input id="file-upload" type="file" accept="image/*" on:change={handleFileUpload} />
+              </div>
+              <textarea
+                placeholder="Entry notes..."
+                bind:value={workout.entry}></textarea>
+            </div>
+
+            <div class="calendar-right">
+              <div class="stats">
+                <label>BW: <input type="number" bind:value={workout.bodyweight} /></label>
+                <label>Protein: <input type="number" bind:value={workout.protein} /></label>
+                <button on:click={() => SaveEntry()}>Save</button>
+              </div>
+
+              <div class="workout-details">
+                {#each workout.workout as ithWorkout, wi}
+                  <div class="exercise-block">
+                    <div class="header">
+                      <input
+                        type="text"
+                        placeholder="Exercise"
+                        bind:value={ithWorkout.Exercise}
+                      />
+                    </div>
+
+                    {#each ithWorkout.Weights as w, si}
+                      <div class="set-row">
+                        <span>Set {si + 1}</span>
+                        <input
+                          type="text"
+                          placeholder="Weight"
+                          bind:value={ithWorkout.Weights[si]}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Reps"
+                          bind:value={ithWorkout.Reps[si]}
+                        />
+                        <button class="removesetbutton" on:click={() => handleRemoveSet(ithWorkout, si)}>✖</button>
+                      </div>
+                    {/each}
+                    <button class="add-set"on:click={() => handleAddSet(ithWorkout)}>+ Add Set</button>
+                  </div>
+                {/each}
+              </div>
+            </div>
+
           </div>
         {/each}
       {:else}
         <p>No workout on this date.</p>
       {/if}
     {:else}
-      <p>Select a date to view details</p>
+      <p>Select a date to view or edit details</p>
     {/if}
   </div>
 </div>
-
+{#if showPopup}
+  <div
+    class="popup-backdrop"
+    role="button"
+    tabindex="0"
+    aria-label="Close popup"
+    on:click={closePopup}
+    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}
+  >
+    <div
+      class="popup"
+      role="dialog"
+      aria-modal="true"
+      tabindex="0"
+      on:click|stopPropagation
+      on:keydown|stopPropagation
+    >
+      <h3>Workout Log Submitted</h3>
+      <pre>{popupContent}</pre>
+      <button on:click={closePopup}>Close</button>
+    </div>
+  </div>
+{/if}
 <style>
+  input[type="file"] {
+    display: none;
+  }
+
+  .file-label {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background-color: #444;
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .file-label:hover {
+    background-color: #0056b3;
+  }
   .calendar-container {
     display: flex;
     flex-direction: column;
@@ -165,7 +250,7 @@
   }
 
   .controls select {
-    padding: 1rem;
+    padding: 0.5rem;
     background: #222;
     color: white;
     border: 1px solid #555;
@@ -175,11 +260,11 @@
   .days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2rem;
+    gap: 1rem;
   }
 
   .day {
-    padding: 0.75rem 0.25rem;
+    padding: 0.5rem 0.25rem;
     background: #444;
     border-radius: 0.25rem;
     cursor: pointer;
@@ -216,39 +301,94 @@
   .entry-view {
     background: #222;
     padding: 1rem;
-    border-radius: 0.5rem;
+    border-radius: 0.2rem;
     text-align: left;
-    flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll;
   }
-
-  .entry {
-    background: #444;
-    padding: 0.75rem;
-    border-radius: 0.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .entry img {
+  
+  .attachment img {
     width: 100%;
+    max-width: 200px;
+    height: auto;
     border-radius: 0.5rem;
-    background: #444;
+    background: #111;
     object-fit: cover;
+    margin-bottom: 0.5rem;
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 0.5rem;
+  .calendar-log-entry {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    background: #333;
+    padding: 1rem;
+    border-radius: 0.5rem;
   }
 
-  th, td {
-    border: 1px solid #666;
-    padding: 0.25rem 0.5rem;
-    text-align: center;
-  }
+.calendar-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-  th {
-    background: #555;
-  }
+.calendar-right {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.calendar-right .header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.set-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.stats button{
+  float: right;
+}
+.popup-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: #222;
+  color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+.popup button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: darkred;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.popup pre {
+  background: #333;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  white-space: pre-wrap;
+}
 </style>

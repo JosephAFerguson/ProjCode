@@ -1,6 +1,6 @@
 <script>
   import { exercises, allSets } from "../lib/Definitions.js";
-  import blankImage from "../lib/BlankImage.png";
+  import blankImage from "/images/BlankImage.png";
 
   let imageUrl = blankImage;
   let title = "";
@@ -48,8 +48,7 @@
   }
 
   function submitLog() {
-    const log = { title, bw, protein, notes, lifts };
-    popupContent = JSON.stringify(log, null, 2);
+    popupContent = "Entry Submitted!";
     showPopup = true;
   }
 
