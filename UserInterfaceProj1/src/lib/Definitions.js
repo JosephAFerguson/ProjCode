@@ -175,10 +175,13 @@ export const allSets = {
     { set: 2, weight: "115 lbs", reps: 8 },
     { set: 3, weight: "135 lbs", reps: 6 }
   ],
-  "Lateral Raise": [
+  "Lateral Raises": [
     { set: 1, weight: "20 lbs", reps: 12 },
     { set: 2, weight: "25 lbs", reps: 10 },
-    { set: 3, weight: "30 lbs", reps: 8 }
+    { set: 3, weight: "30 lbs", reps: 8 },
+    { set: 4, weight: "35 lbs", reps: 6 },
+    { set: 5, weight: "40 lbs", reps: 4 },
+    { set: 6, weight: "45 lbs", reps: 2 }
   ],
 
   // Biceps

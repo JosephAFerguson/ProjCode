@@ -117,7 +117,7 @@
     align-items: center;
     gap: 1rem;
     margin-top: 2.5rem;
-    max-height: 70vh; /* smaller chart */
+    max-height: 65vh; /* smaller chart */
     width: 90%;
     position: relative;
   }

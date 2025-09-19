@@ -105,7 +105,7 @@
   <div class="muscle-view">
     <div class="figurefront">Front</div>
     <!-- FRONT VIEW -->
-      <svg height="300" width="200">
+      <svg height="15rem" width="10rem" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
         <path class="na"
           style="fill:#cccccc;stroke-width:0.264583"
           d="m 71.514138,121.90488 0.508998,43.26478 28.249354,17.81491 21.88689,-15.26992 -1.78149,-45.55527 z"
@@ -167,7 +167,7 @@
           />
       </svg>
     <div class="figureback">Back</div>
-    <svg height="300" width="200">
+    <svg height="15rem" width="10rem" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
       <path class="na"
           style="fill:#cccccc;stroke-width:0.264583"
           d="m 97.656639,44.742702 c -2.89007,0.455002 -6.119032,1.709018 -8.217801,3.747327 -2.218021,2.154123 -4.359123,5.634753 -4.507136,8.723111 -0.369825,7.716528 11.961439,19.850899 11.961439,19.850899 h 8.143959 c 0,0 10.12466,-13.469204 8.838,-21.117656 -0.57627,-3.425601 -4.14723,-6.506047 -7.0565,-8.404195 -2.67447,-1.744949 -6.00744,-3.296122 -9.161961,-2.799486 z"
@@ -269,38 +269,40 @@
 <!-- Bottom: Table -->
 <div class="sets-table">
   <h3>{selectedExercise || exerciseSelect + "Exercises"} - Sets</h3>
-  <table>
-    <thead>
-      <tr>
-        {#if !selectedExercise}
-          <th>Exercise</th>
+  <div class="table-scrollable">
+    <table>
+      <thead>
+        <tr>
+          {#if !selectedExercise}
+            <th>Exercise</th>
+          {/if}
+          <th>Set</th>
+          <th>Weight</th>
+          <th>Reps</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#if selectedExercise}
+          {#each filteredSets as s}
+            <tr>
+              <td>{s.set}</td>
+              <td>{s.weight}</td>
+              <td>{s.reps}</td>
+            </tr>
+          {/each}
+        {:else}
+          {#each filteredSets as s}
+            <tr>
+              <td>{s.exercise}</td>
+              <td>{s.set}</td>
+              <td>{s.weight}</td>
+              <td>{s.reps}</td>
+            </tr>
+          {/each}
         {/if}
-        <th>Set</th>
-        <th>Weight</th>
-        <th>Reps</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#if selectedExercise}
-        {#each filteredSets as s}
-          <tr>
-            <td>{s.set}</td>
-            <td>{s.weight}</td>
-            <td>{s.reps}</td>
-          </tr>
-        {/each}
-      {:else}
-        {#each filteredSets as s}
-          <tr>
-            <td>{s.exercise}</td>
-            <td>{s.set}</td>
-            <td>{s.weight}</td>
-            <td>{s.reps}</td>
-          </tr>
-        {/each}
-      {/if}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 
@@ -308,10 +310,8 @@
 <style>
   .detail-view {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-    padding: 1rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
   }
 
   /* Muscle figure placeholders */
@@ -319,24 +319,21 @@
     display: flex;
     flex-direction: column;
     align-items: center; 
-    justify-content: flex-start;
-    gap: 1rem;
+    gap: 0.5rem;
     background: #222;
-    padding: 1rem;
+    padding: 0.5rem;
     border-radius: 0.5rem;
     flex: 1;
+    max-height: 29rem;
     width: auto;
     text-align: center;
   }
 
 
   .muscle-view svg {
-    max-width: 100%;    
-    max-height: 300px; 
-    width: auto;         
-    height: auto;
-    display: block;
-    margin: 0 auto;    
+    width: 8rem;       
+    height: auto;       
+    max-height: 20rem;   
   }
 
 
@@ -350,11 +347,10 @@
   .exercise-list {
     flex: 2;
     background: #222;
-    padding: 1rem;
-    border-radius: 0.5rem;
+    padding: 0.5rem;
   }
   .scrollable {
-    max-height: 40rem;
+    max-height: 25rem;
     overflow-y: auto;
     margin-top: 0.5rem;
   }
@@ -386,6 +382,11 @@
     width: 100%;
     border-collapse: collapse;
     color: white;
+  }
+  .table-scrollable {
+    max-height: 250px; /* adjust as needed */
+    overflow-y: auto;
+    display: block;
   }
   th, td {
     padding: 0.5rem;
