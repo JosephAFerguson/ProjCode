@@ -9,6 +9,7 @@
 </script>
 
 {#if show}
+  <!--This aria/keydown stuff comes from copilot to prevent the warnings-->
   <div
     class="popup-backdrop"
     role="button"
@@ -17,13 +18,12 @@
     on:click={closePopup}
     on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}
   >
+    <!--This aria/keydown stuff comes from copilot to prevent the warnings-->
     <div
       class="popup"
       role="dialog"
       aria-modal="true"
       tabindex="0"
-      on:click|stopPropagation
-      on:keydown|stopPropagation
     >
       <h3>{title}</h3>
       <button on:click={closePopup}>Close</button>

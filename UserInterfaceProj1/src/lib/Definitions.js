@@ -150,7 +150,6 @@ export const calfexercises = [
   "Calf Raises",
   "Leg Press",
 ];
-// SetsData.js
 export const allSets = {
   // Chest
   "Bench Press": [
@@ -274,7 +273,7 @@ export const allSets = {
     { set: 3, weight: "Bodyweight", reps: 30 }
   ]
 };
-// Generate random entries
+// Generated random entries using copilot
 export const entries = [ 
   { date: "2025-09-02", image: "/images/DudeCurling.png", entry: "It was a great summer day in the middle of august ", protein: 120, bodyweight: 181, 
     workout: [

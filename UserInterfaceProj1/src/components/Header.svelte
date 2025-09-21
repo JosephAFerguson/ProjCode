@@ -1,9 +1,21 @@
 <script>
+  import { bodyweightGoal } from "../lib/Goals.js";
+
   let currentDate = new Date().toDateString();
   export let weekStreak;
   export let userName;
   export let trendingTotal;
   export let trendingBodyweight;
+
+  let goal = null;
+
+  // Subscribe once when component loads
+  bodyweightGoal.subscribe((value) => {
+    goal = value;
+  });
+
+  //determines whether goal is met or not, had the help of ai for this equation
+  $: meetsGoal = goal !== null && trendingBodyweight >= goal;
 </script>
 
 <div class="header">
@@ -23,7 +35,9 @@
     </div>
     <div class="card">
       <p class="label">Bodyweight</p>
-      <p class="value">{trendingBodyweight} lbs</p>
+      <p class="value {meetsGoal ? 'goal-met' : ''}">
+        {trendingBodyweight} lbs
+      </p>
     </div>
   </div>
 </div>
@@ -39,11 +53,9 @@
     padding: 0 2rem;
     border-bottom: 2px solid var(--color-lm-accent);
   }
-
   #CurrentDate {
     margin-left: 2%;
   }
-
   .left {
     display: flex;
     width: 30%;
@@ -51,12 +63,10 @@
     flex-direction: row;
     align-items: center;
   }
-
   .right {
     display: flex;
     gap: 1rem;
   }
-
   .card {
     background: var(--color-lm-accent);
     padding: 0.5rem 0.5rem;
@@ -66,17 +76,18 @@
     max-width: 3%;
     max-height: inherit;
   }
-
   .label {
     font-size: 0.8rem;
     color: var(--color-lm-other);
     margin: 0;
   }
-
   .value {
     font-size: 1rem;
     font-weight: bold;
     margin: 0.25rem 0 0;
     color: var(--color-lm-primary);
+  }
+  .goal-met {
+    color: green;
   }
 </style>

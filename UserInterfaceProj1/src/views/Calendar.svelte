@@ -18,10 +18,11 @@
 
   const years = Array.from({ length: 11 }, (_, i) => 2020 + i); 
 
+  //had help of copilot here
   function buildWorkoutLookup() {
     workoutsByDate = {};
     for (const entry of allEntries) {
-      const dateKey = entry.date; // ISO format "YYYY-MM-DD"
+      const dateKey = entry.date; 
       if (!workoutsByDate[dateKey]) workoutsByDate[dateKey] = [];
       workoutsByDate[dateKey].push(entry);
     }
@@ -32,6 +33,7 @@
     buildWorkoutLookup();
   });
 
+  //had some help from copilot here
   function generateDays(year, month) {
     const date = new Date(year, month, 1);
     const result = [];
@@ -99,6 +101,7 @@
     <div class="days-grid">
       {#each days as day}
         {@const dayKey = day.toISOString().split('T')[0]}
+        <!--This aria/keydown stuff comes from copilot to prevent the warnings-->
         <button
           type="button"
           class="day {selectedDate === dayKey ? 'selected' : ''}"
@@ -118,17 +121,22 @@
     {#if selectedDate && workoutsByDate[selectedDate]?.length}
       {#each workoutsByDate[selectedDate] as workout}
         <div class="calendar-entry-side">
+
           <div class="image-journal-container">
             <div class="image-select-container">
+
               <div class="attachment">
                 <img src={workout.image || blankImage} alt="WorkoutPic" />
               </div>
+
               <div class="imageinput">
                 <label class="file-label" for="file-upload">Change Image</label>
                 <input id="file-upload" type="file" accept="image/*" on:change={handleFileUpload} />
               </div>
+
             </div>
             <textarea placeholder="Entry notes..." bind:value={workout.entry}></textarea>
+
           </div>
           <div class="stats">
             <label>BW: <input type="number" bind:value={workout.bodyweight} /></label>
@@ -213,7 +221,6 @@
     box-shadow: 0 1px 4px var(--color-lm-other);
     border-radius: 0.5rem;
     font-size: 0.95rem;
-    transition: border 0.2s, background 0.2s;
   }
   .controls select:hover {
     border-color: var(--color-lm-primary);
@@ -349,7 +356,6 @@
     color: var(--color-lm-bg);
     font-size: 1.2rem;
     cursor: pointer;
-    transition: transform 0.15s;
   }
   .removesetbutton:hover {
     transform: scale(1.2);

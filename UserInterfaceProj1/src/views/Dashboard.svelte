@@ -82,6 +82,7 @@
 
 <div class="dashboard">
   <div class="metrics">
+    <!--It warns for these rows for accesibility reasons, but it works fine-->
     <div
       class="metrics-card {activeMetric === 'squat' ? 'active' : activeMetric ? 'inactive' : ''}"
       onclick={() => updateChartByMetric('squat')}
@@ -106,6 +107,7 @@
   </div>
 
   <div class="chart-container">
+    <!--I didn't like how this looked so I left it out
     <div class="scroll-wrapper">
       <div class="ticks">
         {#each labels as date, i}
@@ -122,6 +124,7 @@
         class="time-scroll"
       />
     </div>
+  --> 
 
     <canvas bind:this={chartCanvas}></canvas>
   </div>
@@ -129,8 +132,7 @@
 <style>
   .dashboard {
     display:inline;
-    flex-direction: column; /* stack metrics on top of chart */
-    align-items: center;
+    flex-direction: column;
     max-height: 90%;
     max-width: 90%;
     background: var(--color-lm-bg);
@@ -175,6 +177,7 @@
     box-shadow: 0 2px 8px var(--color-lm-bg);
     border-radius: 0.5rem;
   }
+  /*
   .time-scroll {
     writing-mode: vertical-lr;
     transform: rotate(180deg);
@@ -205,6 +208,7 @@
     transform: rotate(180deg);
     max-height: 100%;
   }
+  */
   canvas {
     flex: 1;
     height: 100% !important;

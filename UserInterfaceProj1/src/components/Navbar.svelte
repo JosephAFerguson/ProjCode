@@ -10,7 +10,7 @@
   .navbar {
     display: grid;
     grid-area: sidebar;
-    grid-auto-rows: min-content; /* each link gets its own row */
+    grid-auto-rows: min-content; 
     padding: 0.75rem;
     background: var(--color-lm-bg2);
     border-right: 2px solid var(--color-lm-accent);
@@ -24,8 +24,7 @@
     border-radius: 0.25rem;
     padding: 0.5rem 0.5rem;
     margin-bottom: 2%;
-    transition: background 0.2s, color 0.2s;
-    display: block; /* ensure links occupy full row */
+    display: block; 
   }
 
   .navbar a:hover {

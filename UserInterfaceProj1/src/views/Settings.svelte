@@ -1,10 +1,15 @@
 <script>
   import { onMount } from "svelte";
+  import { bodyweightGoal } from "../lib/Goals.js";
+  import Popup from "../components/Popup.svelte";
 
   let darkMode = false;
   let trackProtein = true;
+  let newGoal = "";
+  let showPopup = false;
 
-  // Load saved preferences
+  //mounts the tracking of darkmode and protein using localStorage
+  // some code came from google and copilot
   onMount(() => {
     const savedDark = localStorage.getItem("darkMode");
     if (savedDark) {
@@ -46,6 +51,14 @@
       document.documentElement.classList.remove("no-protein");
     }
   }
+
+  function setGoal() {
+    if (newGoal && !isNaN(Number(newGoal))) {
+      bodyweightGoal.set(Number(newGoal));
+      showPopup = true;
+    }
+  }
+  function closePopup() { showPopup = false; }
 </script>
 
 <div class="settings-container">
@@ -56,9 +69,21 @@
   <button on:click={toggleProteinTracking}>
     {trackProtein ? "Disable Protein Tracking" : "Enable Protein Tracking"}
   </button>
+
+  <div class="goal-container">
+    <input
+      type="number"
+      placeholder="Enter bodyweight goal"
+      bind:value={newGoal}
+    />
+    <button on:click={setGoal}>Set Goal</button>
+  </div>
 </div>
 
+<Popup show={showPopup} onClose={closePopup} title="Goal Added"></Popup>
+
 <style>
+  /*simple styles here, didnt have much time left*/
   .settings-container {
     display: flex;
     flex-direction: column;
@@ -66,6 +91,17 @@
     justify-content: center;
     align-items: center;
     padding: 1rem;
+  }
+  .goal-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  input {
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    border: 1px solid #ccc;
+    width: 10rem;
   }
   button {
     padding: 0.6rem 1.2rem;
@@ -75,9 +111,4 @@
     background: var(--color-lm-accent);
     color: var(--color-lm-other);
   }
-  :root {
-    --btn-bg: #eee;
-    --btn-text: #111;
-  }
 </style>
-

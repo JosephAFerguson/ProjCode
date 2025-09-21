@@ -8,6 +8,7 @@
   import Navbar from "./components/Navbar.svelte";
   import Settings from './views/Settings.svelte';
 
+  //our views here
   const routes = {
     '/': Dashboard,
     '/calendar': Calendar,
@@ -17,7 +18,7 @@
   };
 </script>
 
-
+<!--Pass in parameters here-->
 <Header 
   userName="Joe Ferguson"
   weekStreak={4} 

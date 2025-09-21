@@ -43,8 +43,8 @@
       window.removeEventListener("keydown", handleKeydown);
     };
   });
-  function filterSetsByMuscle(muscle) {
-    selectedExercise = ""; // Reset specific selection when filtering by muscle
+  function filterSetsByMuscle(muscle) { //used copilot to autofinish the statements when I was coding because it's a lot of typing
+    selectedExercise = ""; 
     if (muscle === "pecs") {
       filteredexercises = filteredexercises === pecexercises ? exercises : pecexercises;
       exerciseSelect = filteredexercises === pecexercises ? "Chest " : "";
@@ -105,6 +105,7 @@
     <div class="svg-container">
       <div class="figurefront">
         <p>Front</p>
+        <!--Hand-made svg stuff here, just pure raw talent-->
         <svg width="10rem" height="10rem" viewBox=" 0 0 200 300" xmlns="http://www.w3.org/2000/svg">
           <path class="na"
             style="fill:#cccccc;stroke-width:0.264583"
@@ -258,6 +259,7 @@
     <h3>{exerciseSelect}Exercises</h3>
     <div class="scrollable">
       {#each filteredexercises as ex}
+      <!--accessibility warnings I don't have time to fix-->
         <div
           class="exercise {selectedExercise === ex ? 'active' : ''}"
           on:click={() => selectExercise(ex)}

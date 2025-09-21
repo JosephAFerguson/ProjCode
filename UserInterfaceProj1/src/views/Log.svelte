@@ -238,9 +238,6 @@
     background: var(--color-lm-bg);
     color: var(--color-lm-other);
   }
-  .no-protein .protein-tracking {
-    display: none;
-  }
   .lifts {
     flex: 1;
     background: var(--color-lm-bg);
