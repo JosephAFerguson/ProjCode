@@ -19,6 +19,9 @@
   --color-lm-bg2: #1e1e1e;       
   --color-lm-bg3: #2c2c2c;     
 }
+:root.no-protein .protein-tracking{
+  display: none;
+}
 #app {
   display: grid;
   grid-template-areas:
@@ -33,6 +36,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  background: var(--color-lm-bg);
   height: 100%;
   overflow: hidden;
 }

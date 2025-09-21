@@ -79,7 +79,7 @@
     <div class="stats">
       <div class="stats-row">
         <label>BW: <input type="number" bind:value={bw} /></label>
-        <label>Protein: <input type="number" bind:value={protein} /></label>
+        <label class="protein-tracking">Protein: <input type="number" bind:value={protein} /></label>
        </div>
     </div>
 
@@ -237,6 +237,9 @@
     border: 1px solid var(--color-lm-accent);
     background: var(--color-lm-bg);
     color: var(--color-lm-other);
+  }
+  .no-protein .protein-tracking {
+    display: none;
   }
   .lifts {
     flex: 1;

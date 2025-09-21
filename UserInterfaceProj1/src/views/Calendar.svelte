@@ -132,7 +132,7 @@
           </div>
           <div class="stats">
             <label>BW: <input type="number" bind:value={workout.bodyweight} /></label>
-            <label>Protein: <input type="number" bind:value={workout.protein} /></label>
+            <label class="protein-tracking">Protein: <input type="number" bind:value={workout.protein} /></label>
             <button on:click={() => SaveEntry()}>Save</button>
           </div>
         </div>
@@ -208,7 +208,7 @@
   }
   .controls select {
     padding: 0.4rem 0.75rem;
-    color: var(--color-lm-other);
+    color: var(--color-lm-accent);
     border: 1px solid var(--color-lm-accent);
     box-shadow: 0 1px 4px var(--color-lm-other);
     border-radius: 0.5rem;
@@ -331,12 +331,12 @@
   .set-row {
     gap: 0.5rem;
     align-items: center;
-    color: var(--color-lm-other);
     width: 100%;
   }
   .set-row input {
     padding: 0.25rem 0.5rem;
     background: var(--color-lm-bg);
+    color: var(--color-lm-accent);
     border: 1px solid var(--color-lm-other);
     border-radius: 0.3rem;
   }
