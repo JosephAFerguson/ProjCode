@@ -1,4 +1,5 @@
 <script>
+  import Popup from "../components/Popup.svelte";
   import { exercises, allSets } from "../lib/Definitions.js";
   import blankImage from "/images/BlankImage.png";
 
@@ -56,25 +57,30 @@
 </script>
 
 <div class="log-view">
-  <!-- Left panel -->
-  <div class="left-panel">
+  <div class="left-top-panel">
     <div class="attachment">
       <img src={imageUrl} alt="Attachment Placeholder" />
       <input type="file" accept="image/*" on:change={handleFileUpload} />
     </div>
+  </div>
+
+  <div class="left-bottom-panel">
     <textarea class="notes" placeholder="Entry notes..." bind:value={notes}></textarea>
   </div>
 
-  <!-- Right panel -->
   <div class="right-panel">
     <div class="header">
-      <input type="text" placeholder="Title" bind:value={title} />
-      <button on:click={submitLog}>Submit</button>
+      <div class="header-row">
+        <input type="text" placeholder="Title" bind:value={title} />
+        <button on:click={submitLog}>Submit</button>
+      </div>
     </div>
 
     <div class="stats">
-      <label>BW: <input type="number" bind:value={bw} /></label>
-      <label>Protein: <input type="number" bind:value={protein} /></label>
+      <div class="stats-row">
+        <label>BW: <input type="number" bind:value={bw} /></label>
+        <label>Protein: <input type="number" bind:value={protein} /></label>
+       </div>
     </div>
 
     <div class="lifts">
@@ -118,224 +124,190 @@
   </div>
 </div>
 
-{#if showPopup}
-  <div
-    class="popup-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Close popup"
-    on:click={closePopup}
-    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}
-  >
-    <div
-      class="popup"
-      role="dialog"
-      aria-modal="true"
-      tabindex="0"
-      on:click|stopPropagation
-      on:keydown|stopPropagation
-    >
-      <h3>Workout Log Submitted</h3>
-      <pre>{popupContent}</pre>
-      <button on:click={closePopup}>Close</button>
-    </div>
-  </div>
-{/if}
+<Popup show={showPopup} onClose={closePopup} title="Workout Log Submitted" />
 
 <style>
   .log-view {
-    display: flex;
+    display: grid;
+    height: 93%;
+    width: 97%;
+    grid-template-columns: 40% 60%;
+    grid-template-rows: 60% 40%;
     gap: 1rem;
-    height: 100%;
-  }
-
-  /* Left panel */
-  .left-panel {
-    flex: 1;
-    background: #222;
-    border-radius: 0.5rem;
     padding: 1rem;
+    background: var(--color-lm-bg);
+    color: var(--color-lm-primary);
+  }
+  .left-top-panel, .left-bottom-panel, .right-panel {
+    display: grid;
+    padding: 1rem;
+    gap: 1rem;
+    box-shadow: 0 2px 8px var(--color-lm-other);
+    border-radius: 0.5rem;
+  }
+  .left-top-panel {
+    grid-column: 1; grid-row: 1; 
+  }
+  .left-bottom-panel { 
+    grid-column: 1; grid-row: 2;
+  }
+  .right-panel { 
+    grid-column: 2;
+    grid-row: 1/3; 
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 1.25rem;
+    background: var(--color-lm-bg);
+    box-shadow: 0 2px 8px var(--color-lm-other);
+    border-radius: 0.5rem;
+    overflow: hidden;
   }
-
   .attachment {
-    background: #333;
     border-radius: 0.5rem;
     padding: 1rem;
     text-align: center;
-    color: white;
   }
   .attachment img {
-    width: 100%;
+    max-width: 80%;
+    max-height: 80%;
     border-radius: 0.5rem;
-    background: #444;
-    object-fit: cover;
+    background: var(--color-lm-bg3);
+    object-fit: contain;
   }
   .attachment input[type="file"] {
-    color: white;
+    color: var(--color-lm-other);
   }
-  .notes {
-    flex: 1;
-    margin-top: 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
-    background: #333;
-    color: white;
-    max-height: 40rem;
+  .notes { 
+    padding: 0.5rem; 
+    border-radius: 0.5rem; 
+    background: var(--color-lm-bg2); 
+    color: var(--color-lm-other); 
   }
-  textarea {
-    flex: 1;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-row {
+    display: flex;
+    gap: 0.75rem;
     width: 100%;
-    background: #333;
-    color: white;
+  }
+  .header input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background: var(--color-lm-bg);
+    color: var(--color-lm-other);
+    border: 1px solid var(--color-lm-accent);
+    border-radius: 0.5rem;
+  }
+  .header button {
+    padding: 0.6rem 1.2rem;
+    background: var(--color-lm-secondary);
+    color: var(--color-lm-bg);
+    font-weight: bold;
     border: none;
     border-radius: 0.5rem;
-    padding: 0.5rem;
-    resize: none;
+    cursor: pointer;
   }
-
-  /* Right panel */
-  .right-panel {
-    flex: 2;
-    background: #222;
+  .stats {
+    display: flex;
+    gap: 1rem;
+  }
+  .stats-row {
+    display: flex;
+    gap: 1.25rem;
+    width: 100%;
+  }
+  .stats label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--color-lm-primary);
+  }
+  .stats input {
+    flex: 1;
+    margin-left: 0.5rem;
+    padding: 0.5rem;
     border-radius: 0.5rem;
+    border: 1px solid var(--color-lm-accent);
+    background: var(--color-lm-bg);
+    color: var(--color-lm-other);
+  }
+  .lifts {
+    flex: 1;
+    background: var(--color-lm-bg);
     padding: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: inset 0 1px 4px var(--color-lm-other);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .header input {
-    flex: 1;
-    padding: 0.5rem;
-  }
-
-  .header button {
-    padding: 0.5rem 1rem;
-    background: darkred;
-    color: white;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-  }
-
-  .stats {
-    display: flex;
-    gap: 1rem;
-    color: white;
-  }
-
-  .stats input {
-    width: 80px;
-    padding: 0.25rem;
-    margin-left: 0.25rem;
-  }
-
-
-  .lifts {
-    background: #333;
+  .lift {
+    background: var(--color-lm-bg2);
     padding: 0.75rem;
     border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    color: white;
-    overflow-y: auto;
+    border: 1px solid var(--color-lm-accent);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
-
   .lift-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-
+  .lift-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-lm-primary);
+  }
   .set-row {
     display: flex;
     gap: 0.5rem;
-    margin: 0.25rem 0;
     align-items: center;
   }
-
+  .set-row span {
+    font-size: 0.85rem;
+    color: var(--color-lm-other);
+  }
   .set-row input {
     flex: 1;
-    padding: 0.25rem;
+    padding: 0.5rem;
+    background: var(--color-lm-bg);
+    color: var(--color-lm-other);
+    border: 1px solid var(--color-lm-other);
+    border-radius: 0.5rem;
   }
-
   .add-set, .remove-set, .remove-lift, .add-lift {
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.75rem;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     cursor: pointer;
-  }
-
-  .add-set {
-    background: #444;
-    color: white;
-    margin-top: 0.5rem;
-  }
-
-  .remove-set {
-    background: darkred;
-    color: white;
-  }
-
-  .remove-lift {
-    background: darkred;
-    color: white;
     font-size: 0.8rem;
   }
-
+  .add-set {
+    background: var(--color-lm-bg);
+    color: var(--color-lm-primary);
+    border: 1px solid var(--color-lm-other);
+  }
+  .remove-set, .remove-lift {
+    background: var(--color-lm-secondary);
+    color: var(--color-lm-bg);
+  }
   .add-lift {
-    background: darkgreen;
-    color: white;
+    align-self: center;
+    margin-top: 0.5rem;
     padding: 0.5rem 1rem;
-    margin-top: 1rem;
+    background: var(--color-lm-secondary);
+    color: var(--color-lm-bg);
     font-weight: bold;
   }
-  .popup-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  .popup {
-    background: #222;
-    color: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80%;
-    overflow-y: auto;
-  }
-
-  .popup button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: darkred;
-    color: white;
-    border: none;
-    border-radius: 0.25rem;
-    cursor: pointer;
-  }
-
-  .popup pre {
-    background: #333;
-    padding: 1rem;
-    border-radius: 0.25rem;
-    white-space: pre-wrap;
-  }
 </style>
-

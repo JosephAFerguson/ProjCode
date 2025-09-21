@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import { entries as allEntries } from "../lib/Definitions.js";
   import blankImage from "/images/BlankImage.png";
+  import Popup from "../components/Popup.svelte";
+
   let currentYear = 2025;
   let currentMonth = 8; 
   let days = [];
@@ -66,8 +68,6 @@
     popupContent = "Entry Updated!";
     showPopup = true;
   }
-  function closePopup() { showPopup = false; }
-
   function handleRemoveSet(exercise, i) {
     exercise.Weights.splice(i, 1);
     exercise.Reps.splice(i, 1);
@@ -79,6 +79,7 @@
     exercise.Reps.push("");
     workoutsByDate = { ...workoutsByDate};
   }
+  function closePopup() { showPopup = false; }
 </script>
 
 <div class="calendar-container">
@@ -137,10 +138,9 @@
         </div>
       {/each}
     {:else}
-      <p>Select a date to view/edit</p>
+      <p>Select a Date</p>
     {/if}
   </div>
-
   <div class="workout-view">
     {#if selectedDate && workoutsByDate[selectedDate]?.length}
       {#each workoutsByDate[selectedDate] as workout}
@@ -163,105 +163,114 @@
           {/each}
         </div>
       {/each}
+    {:else}
+      <p>Select a Date</p>
     {/if}
   </div>
 </div>
 
-{#if showPopup}
-  <div
-    class="popup-backdrop"
-    role="button"
-    tabindex="0"
-    aria-label="Close popup"
-    on:click={closePopup}
-    on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closePopup(); }}
-  >
-    <div
-      class="popup"
-      role="dialog"
-      aria-modal="true"
-      tabindex="0"
-      on:click|stopPropagation
-      on:keydown|stopPropagation
-    >
-      <h3>Workout Log Submitted</h3>
-      <pre>{popupContent}</pre>
-      <button on:click={closePopup}>Close</button>
-    </div>
-  </div>
-{/if}
+
+<Popup show={showPopup} onClose={closePopup} title="Workout Updated"/>
+
 <style>
   .calendar-container {
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 20% 20% 58%;
     grid-template-rows: 50% 50%;
-    height: 100%;
+    height: 97%;
     gap: 1rem;
     padding: 1rem;
-    background: #1a1a1a;
-    color: #eee;
-    font-family: system-ui, sans-serif;
+    background: var(--color-lm-bg);
+    color: var(--color-lm-primary);
   }
-
-  .month-view {
-    background: #2a2a2a;
+  .month-view, .entry-view, .workout-view{
     padding: 1rem;
-    border-radius: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 8px var(--color-lm-other);
+    border-radius: 0.5rem;
   }
-
+  .month-view {
+    grid-column: 1/3;
+    grid-row: 1;
+  }
+  .entry-view {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .workout-view {
+    grid-column: 1/4;
+    grid-row:2;
+    overflow-y: auto;
+  }
   .controls {
-    display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
     justify-content: center;
   }
-
   .controls select {
     padding: 0.4rem 0.75rem;
-    background: #1a1a1a;
-    color: #eee;
-    border: 1px solid #444;
+    color: var(--color-lm-other);
+    border: 1px solid var(--color-lm-accent);
+    box-shadow: 0 1px 4px var(--color-lm-other);
     border-radius: 0.5rem;
     font-size: 0.95rem;
     transition: border 0.2s, background 0.2s;
   }
   .controls select:hover {
-    border-color: #777;
-    background: #222;
+    border-color: var(--color-lm-primary);
+    background: var(--color-lm-bg2)
   }
-
-  .entry-view {
-    background: #222;
-    padding: 1rem;
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+  .day {
+    background: var(--color-lm-accent);
     border-radius: 0.5rem;
-    overflow-y: auto;
+    cursor: pointer;
+    border: none;
+    color: var(--color-lm-other);
+    font-size: 1rem;
+    padding: 0.5rem 0;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    align-items: center;
+    transition: all 0.2s ease;
   }
-
+  .day:hover, .day:focus {
+    background: #555;
+    transform: scale(1.05);
+  }
+  .day.selected, .day[aria-pressed="true"] {
+    background: var(--color-lm-primary);
+    font-weight: bold;
+    box-shadow: 0 1px 4px var(--color-lm-other);
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--color-lm-primary);
+    border-radius: 50%;
+    margin-top: 4px;
+  }
+  
   .image-journal-container {
     display: flex;
     flex-direction: row;
     gap: 1rem;
   }
-
   .image-select-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex: 0 0 200px;
   }
-
   .image-journal-container textarea {
     flex: 1;
     resize: vertical;
     min-height: 20%;
-    background: #111;
-    color: #eee;
+    background: var(--color-lm-accent);
+    color: var(--color-lm-other);
     padding: 0.5rem;
     border: none;
     border-radius: 0.25rem;
@@ -278,112 +287,81 @@
     border-radius: 0.5rem;
     object-fit: cover;
   }
-  .stats {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: center;
-  }
-  .stats button {
-    margin-left: auto;
-    padding: 0.25rem 0.75rem;
-    background: darkred;
-    border: none;
-    border-radius: 0.25rem;
-    color: white;
-    cursor: pointer;
-  }
   input[type="file"] {
     display: none;
   }
   .file-label {
     display: inline-block;
     padding: 0.25rem 0.5rem;
-    background-color: #444;
-    color: white;
+    background-color: var(--color-lm-accent);
+    color: var(--color-lm-other);
     border-radius: 0.5rem;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
   }
   .file-label:hover {
-    background-color: #0056b3;
+    box-shadow: 0 2px 5px var(--color-lm-other);
   }
- 
-  .days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  }
-
-.day {
-  background: #3a3a3a;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  border: none;
-  color: #ddd;
-  font-size: 1rem;
-  padding: 0.5rem 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: all 0.2s ease;
-}
-.day:hover, .day:focus {
-  background: #555;
-  transform: scale(1.05);
-}
-.day.selected, .day[aria-pressed="true"] {
-  background: #b22222;
-  color: #fff;
-  font-weight: bold;
-  box-shadow: 0 0 6px rgba(178,34,34,0.6);
-}
-.dot {
-  width: 6px;
-  height: 6px;
-  background: #ff6b6b;
-  border-radius: 50%;
-  margin-top: 4px;
-}
-  .set-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-  .popup {
-    background: #222;
-    color: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80%;
-    overflow-y: auto;
-  }
-  .popup-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.6);
+  .stats {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+    gap: 1rem;
+    color: var(--color-lm-other);
+    justify-self: center;
+    margin-top: 2%;
   }
-  .popup button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: darkred;
-    color: white;
+  .stats button {
+    margin-left: auto;
+    padding: 0.25rem 0.75rem;
+    background: var(--color-lm-secondary);
     border: none;
     border-radius: 0.25rem;
+    color: white;
     cursor: pointer;
   }
-  .popup pre {
-    background: #333;
-    padding: 1rem;
-    border-radius: 0.25rem;
-    white-space: pre-wrap;
+  .exercise-block {
+    padding: 0.75rem;
+    margin: 0.5rem;
+    justify-items: center;
+    width: 80%;
+    background: var(--color-lm-accent);
+    border-radius: 0.5rem;
+    justify-self: center;
+  }
+  .set-row {
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--color-lm-other);
+    width: 100%;
+  }
+  .set-row input {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-lm-bg);
+    border: 1px solid var(--color-lm-other);
+    border-radius: 0.3rem;
+  }
+  .set-row button{
+    color: var(--color-lm-secondary);
+  }
+  .removesetbutton {
+    background: transparent;
+    border: none;
+    color: var(--color-lm-bg);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .removesetbutton:hover {
+    transform: scale(1.2);
+    color: var(--color-lm-primary);
+  }
+  .add-set {
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: var(--color-lm-secondary);
+    color: var(--color-lm-bg);
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
   }
 </style>

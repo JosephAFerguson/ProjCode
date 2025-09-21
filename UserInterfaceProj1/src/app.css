@@ -2,13 +2,23 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  --color-lm-primary: #d33c12;
+  --color-lm-secondary: darkred;
+  --color-lm-other: #191919;
+  --color-lm-accent: #CED0CE;
+  --color-lm-bg: #FFFFFF;
+  --color-lm-bg2: #E6E8E6;
+  --color-lm-bg3: #8a8a8a;
 }
-
+:root.dark {
+  --color-lm-primary: #ff7043;  
+  --color-lm-secondary: #ff3b30;  
+  --color-lm-other: #f0f0f0;     
+  --color-lm-accent: #444;      
+  --color-lm-bg: #121212;       
+  --color-lm-bg2: #1e1e1e;       
+  --color-lm-bg3: #2c2c2c;     
+}
 #app {
   display: grid;
   grid-template-areas:

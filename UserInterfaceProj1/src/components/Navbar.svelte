@@ -12,14 +12,14 @@
     grid-area: sidebar;
     grid-auto-rows: min-content; /* each link gets its own row */
     padding: 0.75rem;
-    background: var(--background, #3a3a3a);
-    border-right: 2px solid #444;
+    background: var(--color-lm-bg2);
+    border-right: 2px solid var(--color-lm-accent);
     max-height:100%;
     overflow: hidden;
   }
 
   .navbar a {
-    color: var(--textcolor, red);
+    color: var(--color-lm-primary);
     text-decoration: none;
     border-radius: 0.25rem;
     padding: 0.5rem 0.5rem;
@@ -29,7 +29,7 @@
   }
 
   .navbar a:hover {
-    background: var(--background, #2e2e2e);
-    color: darkred;
+    background: var(--color-lm-accent);
+    color: var(--color-lm-other);
   }
 </style>

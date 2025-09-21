@@ -254,7 +254,6 @@
       </div>
   </div>
 
-  <!-- Right: Exercise List -->
   <div class="exercise-view">
     <h3>{exerciseSelect}Exercises</h3>
     <div class="scrollable">
@@ -268,68 +267,76 @@
       {/each}
     </div>
   </div>
-</div>
 
-<div class="sets-view">
-  <h3>{selectedExercise || exerciseSelect + "Exercises"} - Sets</h3>
-  <div class="table-scrollable">
-    <table>
-      <thead>
-        <tr>
-          {#if !selectedExercise}
-            <th>Exercise</th>
+  <div class="sets-view">
+    <h3>{selectedExercise || exerciseSelect + "Exercises"} - Sets</h3>
+    <div class="table-scrollable">
+      <table>
+        <thead>
+          <tr>
+            {#if !selectedExercise}
+              <th>Exercise</th>
+            {/if}
+            <th>Set</th>
+            <th>Weight</th>
+            <th>Reps</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#if selectedExercise}
+            {#each filteredSets as s}
+              <tr>
+                <td>{s.set}</td>
+                <td>{s.weight}</td>
+                <td>{s.reps}</td>
+              </tr>
+            {/each}
+          {:else}
+            {#each filteredSets as s}
+              <tr>
+                <td>{s.exercise}</td>
+                <td>{s.set}</td>
+                <td>{s.weight}</td>
+                <td>{s.reps}</td>
+              </tr>
+            {/each}
           {/if}
-          <th>Set</th>
-          <th>Weight</th>
-          <th>Reps</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#if selectedExercise}
-          {#each filteredSets as s}
-            <tr>
-              <td>{s.set}</td>
-              <td>{s.weight}</td>
-              <td>{s.reps}</td>
-            </tr>
-          {/each}
-        {:else}
-          {#each filteredSets as s}
-            <tr>
-              <td>{s.exercise}</td>
-              <td>{s.set}</td>
-              <td>{s.weight}</td>
-              <td>{s.reps}</td>
-            </tr>
-          {/each}
-        {/if}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 
 
+
 <style>
   .detail-view {
-    display: flex;
-    width: 100%;
-    height: 50%; 
-    box-sizing: border-box;
-    background: #1a1a1a;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    grid-template-rows: 60% 40%;
+    height: 100%;
+    width: 99%;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--color-lm-bg);
+    color: var(--color-lm-primary);
   }
-
+  .muscle-view, .exercise-view, .sets-view{
+    padding: 1rem;
+    box-shadow: 0 2px 8px var(--color-lm-other);
+    border-radius: 0.5rem;
+  }
   .muscle-view {
-    flex: 1; 
-    display: flex;
+    display: grid;
+    grid-column: 1;
+    grid-row: 1;
     flex-direction: column;
     align-items: center;
-    background: #222;
     padding: 0.5rem;
     margin: 0.5rem;
     border-radius: 0.5rem;
   }
-
   .muscle-view .svg-container {
     display: flex;
     width: 100%;
@@ -337,9 +344,8 @@
     gap: 0.5rem;
     justify-content: space-around;
   }
-
   .muscle-view svg {
-    width: 48%;
+    width: 50%;
     height: 100%;
   }
   path:hover {
@@ -348,90 +354,77 @@
   }
   .figurefront, .figureback {
     font-weight: bold;
-    color: white;
     margin-bottom: 0.25rem;
   }
-
-  .figurefront p,
-  .figureback p {
+  .figurefront p, .figureback p {
     margin-bottom: 0.5rem;
     font-weight: bold;
     font-size: 1rem;
   }
-
   .exercise-view {
-    flex: 1; 
-    display: flex;
+    display: grid;
+    grid-column: 2;
+    grid-row: 1;
     flex-direction: column;
-    background: #222;
     padding: 0.5rem;
     border-radius: 0.5rem;
     margin: 0.5rem;
   }
-
   .exercise-view h3 {
     margin: 0;
   }
-
   .scrollable {
     flex: 1;
     overflow-y: auto;
     margin-top: 0.5rem;
   }
-
   .exercise {
     padding: 0.5rem;
-    background: #333;
+    background: var(--color-lm-accent);
     margin-bottom: 0.5rem;
     border-radius: 0.25rem;
     cursor: pointer;
-    color: white;
+    color:var(--color-lm-other);
   }
-
   .exercise:hover {
-    background: #444;
+    background: var(--color-lm-bg3);
   }
-
   .exercise.active {
-    background: darkred;
+    background: var(--color-lm-secondary);
     font-weight: bold;
+    color: var(--color-lm-bg)
   }
-
   .sets-view {
-    width: 100%;
-    height: 50%; 
-    background: #222;
+    display: grid;
+    grid-column: 1/3;
+    grid-row: 2;
     border-radius: 0.5rem;
     box-sizing: border-box;
     overflow: hidden;
     margin: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: 0 2px 8px var(--color-lm-other);
+    border-radius: 0.5rem;
   }
   .sets-view h3 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.2rem;
   }
-
   .table-scrollable {
-    max-height: 90%;
-    margin: 0.5rem;
-    overflow-y: auto;
+    overflow: auto;
   }
-
-  table {
+  .table-scrollable table {
     width: 100%;
-    border-collapse: collapse;
-    color: white;
+    color: var(--color-lm-primary);
     max-height: 90%;
+    
   }
-
   th, td {
     padding: 0.5rem;
+    margin-bottom: 0.6rem;
+    color: var(--color-lm-other);
+    background: var(--color-lm-accent);
     border-bottom: 1px solid #444;
     text-align: center;
-  }
-
-  th {
-    background: #333;
-    position: sticky;
-    top: 0; 
+    vertical-align: middle;
   }
 </style>

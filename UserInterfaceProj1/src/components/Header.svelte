@@ -1,5 +1,6 @@
 <script>
   let currentDate = new Date().toDateString();
+  export let weekStreak;
   export let userName;
   export let trendingTotal;
   export let trendingBodyweight;
@@ -14,7 +15,7 @@
   <div class="right">
     <div class="card">
       <p class="label">Week Streak</p>
-      <p class="value">4 weeks</p>
+      <p class="value">{weekStreak} weeks</p>
     </div>
     <div class="card">
       <p class="label">Total</p>
@@ -33,15 +34,16 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--background, #3a3a3a);
-    color: var(--textcolor, red);
+    background: var(--color-lm-bg2);
+    color: var(--color-lm-primary);
     padding: 0 2rem;
-    border-bottom: 2px solid #444;
+    border-bottom: 2px solid var(--color-lm-accent);
   }
 
-  #CurrentDate{
-    margin-left: 2%
+  #CurrentDate {
+    margin-left: 2%;
   }
+
   .left {
     display: flex;
     width: 30%;
@@ -49,13 +51,14 @@
     flex-direction: row;
     align-items: center;
   }
+
   .right {
     display: flex;
     gap: 1rem;
   }
 
   .card {
-    background:var(--background, #2e2e2e);
+    background: var(--color-lm-accent);
     padding: 0.5rem 0.5rem;
     border-radius: 0.25rem;
     text-align: center;
@@ -66,7 +69,7 @@
 
   .label {
     font-size: 0.8rem;
-    color: #bbb;
+    color: var(--color-lm-other);
     margin: 0;
   }
 
@@ -74,5 +77,6 @@
     font-size: 1rem;
     font-weight: bold;
     margin: 0.25rem 0 0;
+    color: var(--color-lm-primary);
   }
 </style>

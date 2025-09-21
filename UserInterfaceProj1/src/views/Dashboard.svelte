@@ -105,7 +105,6 @@
     </div>
   </div>
 
-
   <div class="chart-container">
     <div class="scroll-wrapper">
       <div class="ticks">
@@ -134,54 +133,47 @@
     align-items: center;
     max-height: 90%;
     max-width: 90%;
+    background: var(--color-lm-bg);
   }
-
   .metrics {
     display: flex;
     justify-content: center;
     margin: 0;
   }
-
   .metrics-card {
-    background: #3a3a3a;
-    color: white;
+    background: var(--color-lm-accent);
+    color: var(--color-lm-primary);
     padding: 1rem 1rem;
     margin-top: 2%;
     margin-left: 7.5%;
     width: 15%;
     border-radius: 0.5rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px var(--color-lm-other);
     text-align: center;
-    transition: opacity 0.3s, transform 0.2s;
     cursor: pointer;
   }
-
   .metrics-card p {
     margin: 0.25rem 0;
     font-weight: bold;
   }
-
   .metrics-card.active {
-    outline: 2px solid #fff;
+    outline: 2px solid var(--color-lm-bg);
     transform: scale(1.05);
   }
-
   .metrics-card.inactive {
     opacity: 0.4;
   }
-
   .chart-container {
     display: flex;
     justify-self: center;
     margin-top: 2%;
-    height: 75%; /* smaller chart */
+    height: 75%; 
     width: 90%;
     position: relative;
   }
   .chart-container canvas {
-    background: #222;
+    box-shadow: 0 2px 8px var(--color-lm-bg);
     border-radius: 0.5rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
   .time-scroll {
     writing-mode: vertical-lr;
@@ -204,7 +196,7 @@
 
   .tick {
     font-size: 0.7rem;
-    color: #ccc;
+    color: var(--color-lm-other);
     writing-mode: horizontal-tb; 
   }
 
@@ -213,7 +205,6 @@
     transform: rotate(180deg);
     max-height: 100%;
   }
-
   canvas {
     flex: 1;
     height: 100% !important;
