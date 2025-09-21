@@ -15,7 +15,7 @@
   });
 
   //determines whether goal is met or not, had the help of ai for this equation
-  $: meetsGoal = goal !== null && trendingBodyweight >= goal;
+  $: meetsGoal = goal !== null && trendingBodyweight <= goal;
 </script>
 
 <div class="header">
